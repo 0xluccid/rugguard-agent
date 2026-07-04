@@ -182,6 +182,8 @@
             cursor: pointer; transition: all 0.15s;
         }
         .qt:hover { background: rgba(0,255,136,0.06); border-color: rgba(0,255,136,0.2); color: var(--green); }
+        .qt-chain { display:inline-block; width:14px; height:14px; vertical-align:-2px; margin-right:4px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+        .qt-chain svg { width:100%; height:100%; display:block; }
 
         /* ── Loading ── */
         .loading-wrap { display:none; margin-top:24px; text-align:center; padding:48px 20px; position:relative; }
@@ -384,10 +386,12 @@
         .footer-text a { color:var(--cyan); text-decoration:none; }
         .footer-text a:hover { text-decoration:underline; }
         .footer-chain { display:flex; justify-content:center; gap:16px; margin-top:14px; flex-wrap:wrap; }
-        .footer-chain span {
+        .footer-chain .fc {
+            display:inline-flex; align-items:center; gap:4px;
             font-size:0.65rem; color:var(--text-3); padding:3px 10px;
             border-radius:100px; border:1px solid var(--border);
         }
+        .footer-chain .fc svg { width:14px; height:14px; border-radius:50%; flex-shrink:0; }
 
         /* ── Responsive ── */
         @media (max-width:640px) {
@@ -452,8 +456,8 @@
                     <select class="chain-sel" id="chainId">
                         <option value="1">⟠ Ethereum</option>
                         <option value="8453">🔵 Base</option>
-                        <option value="solana">◎ Solana</option>
-                        <option value="4663">🐕 Robinhood</option>
+                        <option value="solana">💜 Solana</option>
+                        <option value="4663">🟢 Robinhood</option>
                         <option value="56">🟡 BNB Chain</option>
                         <option value="137">🟣 Polygon</option>
                         <option value="42161">🔵 Arbitrum</option>
@@ -464,16 +468,16 @@
                     </button>
                 </div>
                 <div class="quick-row">
-                    <span class="qt" onclick="quickScan('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',1)">WETH</span>
-                    <span class="qt" onclick="quickScan('0xdAC17F958D2ee523a2206206994597C13D831ec7',1)">USDT</span>
-                    <span class="qt" onclick="quickScan('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',1)">USDC</span>
-                    <span class="qt" onclick="quickScan('0x6B175474E89094C44Da98b954EedeAC495271d0F',1)">DAI</span>
-                    <span class="qt" onclick="quickScan('0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',1)">WBTC</span>
-                    <span class="qt" onclick="quickScan('0x514910771AF9Ca656af840dff83E8264EcF986CA',1)">LINK</span>
-                    <span class="qt" onclick="quickScan('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v','solana')">◎ USDC</span>
-                    <span class="qt" onclick="quickScan('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263','solana')">◎ BONK</span>
-                    <span class="qt" onclick="quickScan('JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN','solana')">◎ JUP</span>
-                    <span class="qt" onclick="quickScan('0x5f6CD1cb5c90d733F0e1B540044230225A96836D','robinhood')">HOOD</span>
+                    <span class="qt" onclick="quickScan('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',1)"><span class="qt-chain eth"><svg viewBox="0 0 20 20"><path d="M10 2L4 10l6 3.5L16 10z" fill="#627EEA" opacity=".9"/><path d="M10 2v16l6-6.5-6 3.5z" fill="#627EEA" opacity=".7"/><path d="M10 2L4 10l6 3.5z" fill="#8A9FF2"/></span>WETH</span>
+                    <span class="qt" onclick="quickScan('0xdAC17F958D2ee523a2206206994597C13D831ec7',1)"><span class="qt-chain eth"><svg viewBox="0 0 20 20"><path d="M10 2L4 10l6 3.5L16 10z" fill="#627EEA" opacity=".9"/><path d="M10 2v16l6-6.5-6 3.5z" fill="#627EEA" opacity=".7"/><path d="M10 2L4 10l6 3.5z" fill="#8A9FF2"/></span>USDT</span>
+                    <span class="qt" onclick="quickScan('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',1)"><span class="qt-chain eth"><svg viewBox="0 0 20 20"><path d="M10 2L4 10l6 3.5L16 10z" fill="#627EEA" opacity=".9"/><path d="M10 2v16l6-6.5-6 3.5z" fill="#627EEA" opacity=".7"/><path d="M10 2L4 10l6 3.5z" fill="#8A9FF2"/></span>USDC</span>
+                    <span class="qt" onclick="quickScan('0x6B175474E89094C44Da98b954EedeAC495271d0F',1)"><span class="qt-chain eth"><svg viewBox="0 0 20 20"><path d="M10 2L4 10l6 3.5L16 10z" fill="#627EEA" opacity=".9"/><path d="M10 2v16l6-6.5-6 3.5z" fill="#627EEA" opacity=".7"/><path d="M10 2L4 10l6 3.5z" fill="#8A9FF2"/></span>DAI</span>
+                    <span class="qt" onclick="quickScan('0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',1)"><span class="qt-chain eth"><svg viewBox="0 0 20 20"><path d="M10 2L4 10l6 3.5L16 10z" fill="#627EEA" opacity=".9"/><path d="M10 2v16l6-6.5-6 3.5z" fill="#627EEA" opacity=".7"/><path d="M10 2L4 10l6 3.5z" fill="#8A9FF2"/></span>WBTC</span>
+                    <span class="qt" onclick="quickScan('0x514910771AF9Ca656af840dff83E8264EcF986CA',1)"><span class="qt-chain eth"><svg viewBox="0 0 20 20"><path d="M10 2L4 10l6 3.5L16 10z" fill="#627EEA" opacity=".9"/><path d="M10 2v16l6-6.5-6 3.5z" fill="#627EEA" opacity=".7"/><path d="M10 2L4 10l6 3.5z" fill="#8A9FF2"/></span>LINK</span>
+                    <span class="qt" onclick="quickScan('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v','solana')"><span class="qt-chain sol"><svg viewBox="0 0 20 20"><path d="M4 14h12l-3-3H7zm0-3h12l-3-3H7zm0-3h12L13 5H7z" fill="#9945FF"/></span>USDC</span>
+                    <span class="qt" onclick="quickScan('DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263','solana')"><span class="qt-chain sol"><svg viewBox="0 0 20 20"><path d="M4 14h12l-3-3H7zm0-3h12l-3-3H7zm0-3h12L13 5H7z" fill="#9945FF"/></span>BONK</span>
+                    <span class="qt" onclick="quickScan('JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN','solana')"><span class="qt-chain sol"><svg viewBox="0 0 20 20"><path d="M4 14h12l-3-3H7zm0-3h12l-3-3H7zm0-3h12L13 5H7z" fill="#9945FF"/></span>JUP</span>
+                    <span class="qt" onclick="quickScan('0x5f6CD1cb5c90d733F0e1B540044230225A96836D','robinhood')"><span class="qt-chain hood"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="#00C805"/><text x="10" y="14" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">R</text></span>HOOD</span>
                 </div>
             </div>
 
@@ -546,8 +550,14 @@
                 <br>Powered by GoPlus Security API + DexScreener
             </div>
             <div class="footer-chain">
-                <span>⟠ Ethereum</span><span>🔵 Base</span><span>◎ Solana</span><span>🐕 Robinhood</span>
-                <span>🟡 BNB</span><span>🟣 Polygon</span><span>🔵 Arbitrum</span><span>🔴 Optimism</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><path d="M8 1L3 8l5 3 5-3z" fill="#627EEA" opacity=".8"/><path d="M8 1v14l5-5-5 3z" fill="#627EEA" opacity=".6"/><path d="M8 1L3 8l5 3z" fill="#8A9FF2"/></svg>Ethereum</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#0052FF"/><text x="8" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">B</text></svg>Base</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><path d="M3 11h10l-2.5-2.5H5.5zm0-2.5h10l-2.5-2.5H5.5zm0-2.5h10L10.5 3.5H5.5z" fill="#9945FF"/></svg>Solana</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#00C805"/><text x="8" y="11.5" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">R</text></svg>Robinhood</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#F0B90B"/><text x="8" y="11.5" text-anchor="middle" font-size="7" font-weight="bold" fill="#000">BNB</text></svg>BNB</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#8247E5"/><path d="M10.5 5.5l-2 1.5v3l2-1.5z" fill="#fff"/><path d="M8 5.5l-2 1.5v3l2-1.5z" fill="#fff" opacity=".7"/><path d="M5.5 5.5l2 1.5v3l-2-1.5z" fill="#fff" opacity=".4"/></svg>Polygon</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#28A0F0"/><text x="8" y="12" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">A</text></svg>Arbitrum</span>
+                <span class="fc"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#FF0420"/><text x="8" y="12" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">O</text></svg>Optimism</span>
             </div>
         </footer>
     </div>
