@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RugGuard - AI Token Security Scanner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #16161f;
+            --bg-card-hover: #1c1c28;
+            --accent-green: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-red: #ff3366;
+            --accent-orange: #ff8800;
+            --accent-yellow: #ffcc00;
+            --accent-purple: #aa55ff;
+            --text-primary: #ffffff;
+            --text-secondary: #8888aa;
+            --text-muted: #555566;
+            --border-subtle: rgba(255,255,255,0.06);
+            --border-active: rgba(0,255,136,0.3);
+            --glow-green: 0 0 40px rgba(0,255,136,0.15);
+            --glow-red: 0 0 40px rgba(255,51,102,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background */
+        .ambient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .ambient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(0,255,136,0.03) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(0,212,255,0.03) 0%, transparent 50%);
+            animation: ambientDrift 20s ease-in-out infinite alternate;
+        }
+        @keyframes ambientDrift {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-3%, -3%) rotate(2deg); }
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 50px 0 30px;
+            text-align: center;
+        }
+        .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 20px rgba(0,255,136,0.25);
+        }
+        .logo-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+        .tagline span {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 24px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        /* Scanner section */
+        .scanner {
+            margin-top: 40px;
+        }
+        .scanner-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .scanner-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-green), var(--accent-cyan), transparent);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .address-input {
+            flex: 1;
+            position: relative;
+        }
+        .address-input input {
+            width: 100%;
+            padding: 16px 20px 16px 48px;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .address-input input:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(0,255,136,0.1);
+        }
+        .address-input input::placeholder {
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+        }
+        .address-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
+        .chain-select {
+            min-width: 150px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+        .chain-select:focus {
+            border-color: var(--accent-green);
+        }
+        .chain-select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .scan-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--accent-green), #00cc66);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .scan-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+        .scan-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(0,255,136,0.3);
+        }
+        .scan-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        .scan-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .scan-btn .btn-text { position: relative; z-index: 1; }
+
+        .quick-tokens {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .quick-token {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .quick-token:hover {
+            background: rgba(0,255,136,0.08);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Loading state */
+        .loading-overlay {
+            display: none;
+            margin-top: 24px;
+            text-align: center;
+            padding: 40px;
+        }
+        .loading-overlay.show { display: block; }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border-subtle);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-steps {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 12px;
+        }
+        .loading-step {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .loading-step.active {
+            color: var(--accent-green);
+        }
+        .loading-step .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+        .loading-step.active .dot {
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        /* Error */
+        .error-box {
+            display: none;
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: rgba(255,51,102,0.08);
+            border: 1px solid rgba(255,51,102,0.2);
+            border-radius: 12px;
+            color: var(--accent-red);
+            font-size: 0.9rem;
+        }
+        .error-box.show { display: flex; align-items: center; gap: 10px; }
+
+        /* Results */
+        .results {
+            display: none;
+            margin-top: 24px;
+            animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .results.show { display: block; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Risk hero */
+        .risk-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 36px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .risk-hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+        }
+        .risk-hero.safe::after { background: linear-gradient(90deg, transparent, var(--accent-green), transparent); }
+        .risk-hero.caution::after { background: linear-gradient(90deg, transparent, var(--accent-yellow), transparent); }
+        .risk-hero.danger::after { background: linear-gradient(90deg, transparent, var(--accent-orange), transparent); }
+        .risk-hero.scam::after { background: linear-gradient(90deg, transparent, var(--accent-red), transparent); }
+
+        .risk-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .risk-circle::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            padding: 3px;
+            background: conic-gradient(from 0deg, transparent 0%, currentColor 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.3;
+        }
+        .risk-circle.safe { background: rgba(0,255,136,0.08); color: var(--accent-green); }
+        .risk-circle.caution { background: rgba(255,204,0,0.08); color: var(--accent-yellow); }
+        .risk-circle.danger { background: rgba(255,136,0,0.08); color: var(--accent-orange); }
+        .risk-circle.scam { background: rgba(255,51,102,0.08); color: var(--accent-red); }
+
+        .risk-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .risk-max {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            margin-top: 2px;
+        }
+
+        .risk-details {
+            flex: 1;
+        }
+        .risk-level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        .risk-level-badge.safe { background: rgba(0,255,136,0.1); color: var(--accent-green); }
+        .risk-level-badge.caution { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
+        .risk-level-badge.danger { background: rgba(255,136,0,0.1); color: var(--accent-orange); }
+        .risk-level-badge.scam { background: rgba(255,51,102,0.1); color: var(--accent-red); }
+
+        .risk-token-info {
+            margin-bottom: 8px;
+        }
+        .token-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .token-address-small {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .token-address-small a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+        .token-address-small a:hover { text-decoration: underline; }
+
+        .risk-recommendation {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        /* Security checks grid */
+        .checks-section {
+            margin-top: 16px;
+        }
+        .checks-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .check-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s;
+        }
+        .check-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .check-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .check-icon.pass { background: rgba(0,255,136,0.1); }
+        .check-icon.fail { background: rgba(255,51,102,0.1); }
+        .check-icon.warn { background: rgba(255,204,0,0.1); }
+
+        .check-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .check-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .check-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .check-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+        .check-status.pass { background: rgba(0,255,136,0.1); color: var(--accent-green); }
+        .check-status.fail { background: rgba(255,51,102,0.1); color: var(--accent-red); }
+        .check-status.warn { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
+
+        /* Findings */
+        .findings-section {
+            margin-top: 16px;
+        }
+        .findings-section h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .findings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .finding-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+        .finding-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .finding-dot.info { background: var(--accent-cyan); }
+        .finding-dot.warning { background: var(--accent-yellow); }
+        .finding-dot.danger { background: var(--accent-red); }
+
+        /* History */
+        .history-section {
+            margin-top: 40px;
+            padding-bottom: 60px;
+        }
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .history-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .history-clear {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .history-clear:hover { color: var(--accent-red); }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .history-item:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .history-score {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+        }
+        .history-score.safe { background: rgba(0,255,136,0.1); color: var(--accent-green); }
+        .history-score.caution { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
+        .history-score.danger { background: rgba(255,136,0,0.1); color: var(--accent-orange); }
+        .history-score.scam { background: rgba(255,51,102,0.1); color: var(--accent-red); }
+
+        .history-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .history-token {
+            font-size: 0.88rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .history-addr {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .history-time {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 0 50px;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 20px;
+        }
+        .footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .header { padding: 30px 0 20px; }
+            .logo-text { font-size: 1.6rem; }
+            .stats-bar { gap: 20px; }
+            .stat-num { font-size: 1.1rem; }
+
+            .input-row {
+                flex-direction: column;
+            }
+            .chain-select { min-width: auto; }
+            .scan-btn { width: 100%; }
+
+            .risk-hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 28px 20px;
+            }
+
+            .checks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-row">
+                <div class="logo-icon">🛡️</div>
+                <div class="logo-text">RugGuard</div>
+            </div>
+            <p class="tagline">AI-Powered <span>Token Security Scanner</span></p>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-num" id="statScans">0</div>
+                    <div class="stat-label">Scans</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">6</div>
+                    <div class="stat-label">Chains</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">8</div>
+                    <div class="stat-label">Checks</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scanner -->
+        <section class="scanner">
+            <div class="scanner-card">
+                <div class="input-row">
+                    <div class="address-input">
+                        <span class="address-icon">⌕</span>
+                        <input type="text" id="tokenAddress" placeholder="Paste token contract address (0x...)" spellcheck="false" autocomplete="off" />
+                    </div>
+                    <select class="chain-select" id="chainId">
+                        <option value="1">⟠ Ethereum</option>
+                        <option value="8453">🔵 Base</option>
+                        <option value="56">🟡 BNB Chain</option>
+                        <option value="137">🟣 Polygon</option>
+                        <option value="42161">🔵 Arbitrum</option>
+                        <option value="10">🔴 Optimism</option>
+                    </select>
+                    <button class="scan-btn" id="scanBtn" onclick="scanToken()">
+                        <span class="btn-text">Scan →</span>
+                    </button>
+                </div>
+                <div class="quick-tokens">
+                    <span class="quick-token" onclick="quickScan('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',1)">WETH</span>
+                    <span class="quick-token" onclick="quickScan('0xdAC17F958D2ee523a2206206994597C13D831ec7',1)">USDT</span>
+                    <span class="quick-token" onclick="quickScan('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',1)">USDC</span>
+                    <span class="quick-token" onclick="quickScan('0x6B175474E89094C44Da98b954EedeAC495271d0F',1)">DAI</span>
+                    <span class="quick-token" onclick="quickScan('0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',1)">WBTC</span>
+                    <span class="quick-token" onclick="quickScan('0x514910771AF9Ca656af840dff83E8264EcF986CA',1)">LINK</span>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-overlay" id="loading">
+                <div class="loader"></div>
+                <p style="color:var(--text-secondary); font-size:0.9rem;">Scanning token security...</p>
+                <div class="loading-steps">
+                    <div class="loading-step active" id="step1"><span class="dot"></span> Contract</div>
+                    <div class="loading-step" id="step2"><span class="dot"></span> Holders</div>
+                    <div class="loading-step" id="step3"><span class="dot"></span> Liquidity</div>
+                    <div class="loading-step" id="step4"><span class="dot"></span> Analysis</div>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div class="error-box" id="error"></div>
+
+            <!-- Results -->
+            <div class="results" id="results">
+                <div class="risk-hero" id="riskHero">
+                    <div class="risk-circle" id="riskCircle">
+                        <div class="risk-number" id="riskScore">0</div>
+                        <div class="risk-max">/100</div>
+                    </div>
+                    <div class="risk-details">
+                        <div class="risk-level-badge" id="riskBadge">SAFE</div>
+                        <div class="risk-token-info">
+                            <div class="token-name" id="tokenName">Token</div>
+                            <div class="token-address-small" id="tokenAddr"></div>
+                        </div>
+                        <div class="risk-recommendation" id="riskRec"></div>
+                    </div>
+                </div>
+
+                <!-- Security Checks -->
+                <div class="checks-section">
+                    <div class="checks-grid" id="checksGrid"></div>
+                </div>
+
+                <!-- Findings -->
+                <div class="findings-section" id="findingsSection">
+                    <h3>📋 Findings</h3>
+                    <div class="findings-list" id="findingsList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History -->
+        <section class="history-section" id="historySection" style="display:none;">
+            <div class="history-header">
+                <h2>🕐 Recent Scans</h2>
+                <button class="history-clear" onclick="clearHistory()">Clear all</button>
+            </div>
+            <div class="history-list" id="historyList"></div>
+        </section>
+
+        <footer class="footer">
+            RugGuard Agent • Built for <a href="https://web3.okx.com/xlayer/build-x-hackathon" target="_blank">OKX AI Genesis Hackathon</a>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:8000'
+            : 'https://rugguard-api.vercel.app';
+
+        let scanCount = 0;
+        let history = JSON.parse(localStorage.getItem('rugguard_history') || '[]');
+
+        // Init
+        document.getElementById('statScans').textContent = history.length;
+        renderHistory();
+
+        document.getElementById('tokenAddress').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') scanToken();
+        });
+
+        function quickScan(addr, chain) {
+            document.getElementById('tokenAddress').value = addr;
+            document.getElementById('chainId').value = chain;
+            scanToken();
+        }
+
+        async function scanToken() {
+            const address = document.getElementById('tokenAddress').value.trim();
+            const chainId = parseInt(document.getElementById('chainId').value);
+
+            if (!address || !address.startsWith('0x') || address.length !== 42) {
+                showError('Enter a valid contract address (0x...)');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+            document.getElementById('scanBtn').disabled = true;
+
+            // Animate steps
+            animateSteps();
+
+            try {
+                const response = await fetch(`${API_URL}/scan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address, chain_id: chainId })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.detail || data.error || 'Scan failed');
+                }
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+
+                displayResults(data, address, chainId);
+                saveHistory(data, address, chainId);
+            } catch (err) {
+                showError(err.message || 'Network error — try again');
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('scanBtn').disabled = false;
+            }
+        }
+
+        function animateSteps() {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            steps.forEach((s, i) => {
+                setTimeout(() => {
+                    steps.forEach(x => document.getElementById(x).classList.remove('active'));
+                    document.getElementById(s).classList.add('active');
+                }, (i + 1) * 400);
+            });
+        }
+
+        function displayResults(data, address, chainId) {
+            const score = data.risk_score;
+            const level = data.risk_level.toLowerCase();
+
+            // Risk hero
+            const hero = document.getElementById('riskHero');
+            hero.className = 'risk-hero ' + level;
+            hero.style.animation = 'none';
+            hero.offsetHeight;
+            hero.style.animation = '';
+
+            const circle = document.getElementById('riskCircle');
+            circle.className = 'risk-circle ' + level;
+
+            document.getElementById('riskScore').textContent = score;
+
+            const badge = document.getElementById('riskBadge');
+            badge.className = 'risk-level-badge ' + level;
+            badge.textContent = data.risk_level.toUpperCase();
+
+            // Token info
+            document.getElementById('tokenName').textContent = data.token_name || 'Unknown Token';
+            if (data.token_symbol) {
+                document.getElementById('tokenName').textContent += ` (${data.token_symbol})`;
+            }
+            const chainscan = { 1: 'etherscan.io', 8453: 'basescan.org', 56: 'bscscan.com', 137: 'polygonscan.com', 42161: 'arbiscan.io', 10: 'optimistic.etherscan.io' };
+            const scanUrl = `https://${chainscan[chainId] || 'etherscan.io'}/token/${address}`;
+            document.getElementById('tokenAddr').innerHTML = `<a href="${scanUrl}" target="_blank">${address.slice(0,6)}...${address.slice(-4)} ↗</a>`;
+
+            document.getElementById('riskRec').textContent = data.recommendation;
+
+            // Security checks
+            const checks = [
+                { name: 'Honeypot', desc: 'Can you sell?', pass: !data.is_honeypot },
+                { name: 'Mintable', desc: 'Supply increase risk', pass: !data.is_mintable },
+                { name: 'Proxy Contract', desc: 'Upgradeable logic', pass: !data.is_proxy },
+                { name: 'Owner Privileges', desc: 'Balance manipulation', pass: !data.owner_can_change_balance },
+                { name: 'LP Locked', desc: 'Liquidity secured', pass: data.lp_locked },
+                { name: 'Blacklist', desc: 'Can block wallets', pass: !data.has_blacklist },
+                { name: 'Max TX Limit', desc: 'Trading restrictions', pass: !data.has_max_tx },
+                { name: 'Top Holders', desc: 'Whale concentration', pass: data.top_holder_pct < 30 },
+            ];
+
+            document.getElementById('checksGrid').innerHTML = checks.map(c => {
+                const status = c.pass ? 'pass' : 'fail';
+                const icon = c.pass ? '✓' : '✗';
+                return `
+                    <div class="check-card">
+                        <div class="check-icon ${status}">${icon}</div>
+                        <div class="check-info">
+                            <div class="check-name">${c.name}</div>
+                            <div class="check-desc">${c.desc}</div>
+                        </div>
+                        <div class="check-status ${status}">${c.pass ? 'Pass' : 'Fail'}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Findings
+            const findings = data.findings || [];
+            if (findings.length > 0) {
+                document.getElementById('findingsSection').style.display = 'block';
+                document.getElementById('findingsList').innerHTML = findings.map(f => {
+                    let dot = 'info';
+                    if (f.includes('🚨') || f.includes('High')) dot = 'danger';
+                    else if (f.includes('⚠️') || f.includes('Warning')) dot = 'warning';
+                    const cleanText = f.replace(/[🚨⚠️✅]/g, '').trim();
+                    return `<div class="finding-item"><span class="finding-dot ${dot}"></span>${cleanText}</div>`;
+                }).join('');
+            } else {
+                document.getElementById('findingsSection').style.display = 'none';
+            }
+
+            document.getElementById('results').classList.add('show');
+
+            // Update scan count
+            scanCount++;
+            document.getElementById('statScans').textContent = history.length + 1;
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error');
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        function saveHistory(data, address, chainId) {
+            const entry = {
+                address,
+                chainId,
+                score: data.risk_score,
+                level: data.risk_level,
+                name: data.token_name || 'Unknown',
+                symbol: data.token_symbol || '',
+                time: Date.now()
+            };
+            history.unshift(entry);
+            if (history.length > 20) history = history.slice(0, 20);
+            localStorage.setItem('rugguard_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+
+            if (history.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            list.innerHTML = history.slice(0, 10).map(h => {
+                const level = h.level.toLowerCase();
+                const ago = timeAgo(h.time);
+                const name = h.symbol ? `${h.name} (${h.symbol})` : h.name;
+                return `
+                    <div class="history-item" onclick="quickScan('${h.address}',${h.chainId})">
+                        <div class="history-score ${level}">${h.score}</div>
+                        <div class="history-info">
+                            <div class="history-token">${name}</div>
+                            <div class="history-addr">${h.address.slice(0,10)}...${h.address.slice(-6)}</div>
+                        </div>
+                        <div class="history-time">${ago}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function timeAgo(ts) {
+            const diff = Math.floor((Date.now() - ts) / 1000);
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            return Math.floor(diff / 86400) + 'd ago';
+        }
+
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('rugguard_history');
+            renderHistory();
+            document.getElementById('statScans').textContent = '0';
+        }
+    </script>
+</body>
+</html>
