@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RugGuard — AI Token Security Scanner</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'><defs><linearGradient id='g' x1='0' y1='0' x2='56' y2='56'><stop offset='0%25' stop-color='%2300ff88'/><stop offset='100%25' stop-color='%2300d4ff'/></linearGradient></defs><path d='M28 4L8 14v14c0 12 8.5 22.5 20 26 11.5-3.5 20-14 20-26V14L28 4z' fill='url(%23g)' stroke='url(%23g)' stroke-width='2'/><path d='M24 28l4 4 8-8' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -79,17 +79,10 @@
 
         .logo-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
         .logo-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: linear-gradient(135deg, var(--green), var(--cyan));
+            width: 56px; height: 56px; position: relative;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; position: relative;
-            box-shadow: 0 4px 24px rgba(0,255,136,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
         }
-        .logo-icon::after {
-            content:''; position:absolute; inset:-2px; border-radius:18px;
-            background: linear-gradient(135deg, var(--green), var(--cyan));
-            z-index:-1; opacity:0.3; filter:blur(12px);
-        }
+        .logo-icon svg { width:100%; height:100%; filter:drop-shadow(0 4px 20px rgba(0,255,136,0.35)); }
         .logo-text {
             font-size: 2.4rem; font-weight: 800; letter-spacing: -1px;
             background: linear-gradient(135deg, #fff 0%, var(--green) 50%, var(--cyan) 100%);
@@ -426,7 +419,17 @@
         <header class="hero">
             <div class="badge-top"><span class="pulse"></span> Live on 8 Chains</div>
             <div class="logo-row">
-                <div class="logo-icon">🛡️</div>
+                <div class="logo-icon"><svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="shieldGrad" x1="0" y1="0" x2="56" y2="56">
+                            <stop offset="0%" stop-color="#00ff88"/>
+                            <stop offset="100%" stop-color="#00d4ff"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M28 4L8 14v14c0 12 8.5 22.5 20 26 11.5-3.5 20-14 20-26V14L28 4z" fill="url(#shieldGrad)" opacity="0.15" stroke="url(#shieldGrad)" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M28 12L14 19v9c0 8.5 6 15.8 14 18.2 8-2.4 14-9.7 14-18.2v-9L28 12z" fill="url(#shieldGrad)" opacity="0.3"/>
+                    <path d="M24 28l4 4 8-8" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg></div>
                 <div class="logo-text">RugGuard</div>
             </div>
             <p class="tagline">AI-Powered <em>Token Security Scanner</em><br>Scan any token across 8 chains in seconds</p>
