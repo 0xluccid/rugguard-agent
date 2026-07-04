@@ -48,10 +48,8 @@
         .ambient::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
             background: radial-gradient(ellipse at 30% 20%, rgba(0,255,136,0.03) 0%, transparent 50%),
                         radial-gradient(ellipse at 70% 80%, rgba(0,212,255,0.03) 0%, transparent 50%);
             animation: ambientDrift 20s ease-in-out infinite alternate;
@@ -82,202 +80,110 @@
         }
 
         /* Header */
-        .header {
-            padding: 50px 0 30px;
-            text-align: center;
-        }
-        .logo-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 12px;
-        }
+        .header { padding: 50px 0 30px; text-align: center; }
+        .logo-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 12px; }
         .logo-icon {
-            width: 52px;
-            height: 52px;
+            width: 52px; height: 52px;
             background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
             border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 26px;
             box-shadow: 0 4px 20px rgba(0,255,136,0.25);
         }
         .logo-text {
-            font-size: 2.2rem;
-            font-weight: 800;
+            font-size: 2.2rem; font-weight: 800;
             background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
         }
-        .tagline {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            font-weight: 400;
-        }
-        .tagline span {
-            color: var(--accent-cyan);
-            font-weight: 600;
-        }
+        .tagline { color: var(--text-secondary); font-size: 1.05rem; font-weight: 400; }
+        .tagline span { color: var(--accent-cyan); font-weight: 600; }
 
         /* Stats bar */
         .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 24px;
-            padding: 16px 0;
+            display: flex; justify-content: center; gap: 40px;
+            margin-top: 24px; padding: 16px 0;
             border-top: 1px solid var(--border-subtle);
             border-bottom: 1px solid var(--border-subtle);
         }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-num {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--accent-green);
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent-green); font-family: 'JetBrains Mono', monospace; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
-        /* Scanner section */
-        .scanner {
-            margin-top: 40px;
-        }
+        /* Scanner */
+        .scanner { margin-top: 40px; }
         .scanner-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 20px;
             padding: 32px;
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
         .scanner-card::before {
             content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent-green), var(--accent-cyan), transparent);
         }
 
-        .input-row {
-            display: flex;
-            gap: 12px;
-            align-items: stretch;
-        }
-        .address-input {
-            flex: 1;
-            position: relative;
-        }
+        .input-row { display: flex; gap: 12px; align-items: stretch; }
+        .address-input { flex: 1; position: relative; }
         .address-input input {
-            width: 100%;
-            padding: 16px 20px 16px 48px;
+            width: 100%; padding: 16px 20px 16px 48px;
             background: var(--bg-secondary);
             border: 1.5px solid var(--border-subtle);
             border-radius: 12px;
             color: var(--text-primary);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.92rem;
-            transition: all 0.2s;
-            outline: none;
+            transition: all 0.2s; outline: none;
         }
         .address-input input:focus {
             border-color: var(--accent-green);
             box-shadow: 0 0 0 3px rgba(0,255,136,0.1);
         }
-        .address-input input::placeholder {
-            color: var(--text-muted);
-            font-family: 'Inter', sans-serif;
-        }
-        .address-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            opacity: 0.5;
-        }
+        .address-input input::placeholder { color: var(--text-muted); font-family: 'Inter', sans-serif; }
+        .address-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity: 0.5; }
 
         .chain-select {
-            min-width: 150px;
-            padding: 16px 20px;
+            min-width: 150px; padding: 16px 20px;
             background: var(--bg-secondary);
             border: 1.5px solid var(--border-subtle);
             border-radius: 12px;
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
-            cursor: pointer;
-            outline: none;
-            appearance: none;
+            cursor: pointer; outline: none; appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
         }
-        .chain-select:focus {
-            border-color: var(--accent-green);
-        }
-        .chain-select option {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
+        .chain-select:focus { border-color: var(--accent-green); }
+        .chain-select option { background: var(--bg-secondary); color: var(--text-primary); }
 
         .scan-btn {
             padding: 16px 32px;
             background: linear-gradient(135deg, var(--accent-green), #00cc66);
-            border: none;
-            border-radius: 12px;
-            color: #000;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
+            border: none; border-radius: 12px;
+            color: #000; font-family: 'Inter', sans-serif;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: all 0.25s;
+            white-space: nowrap; position: relative; overflow: hidden;
         }
         .scan-btn::after {
             content: '';
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             width: 0; height: 0;
             background: rgba(255,255,255,0.2);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.5s, height 0.5s;
         }
-        .scan-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 24px rgba(0,255,136,0.3);
-        }
-        .scan-btn:active::after {
-            width: 300px;
-            height: 300px;
-        }
-        .scan-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+        .scan-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,255,136,0.3); }
+        .scan-btn:active::after { width: 300px; height: 300px; }
+        .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
         .scan-btn .btn-text { position: relative; z-index: 1; }
 
-        .quick-tokens {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
+        .quick-tokens { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
         .quick-token {
             padding: 6px 14px;
             background: rgba(255,255,255,0.04);
@@ -285,27 +191,16 @@
             border-radius: 20px;
             color: var(--text-secondary);
             font-size: 0.78rem;
-            cursor: pointer;
-            transition: all 0.2s;
+            cursor: pointer; transition: all 0.2s;
             font-family: 'JetBrains Mono', monospace;
         }
-        .quick-token:hover {
-            background: rgba(0,255,136,0.08);
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-        }
+        .quick-token:hover { background: rgba(0,255,136,0.08); border-color: var(--accent-green); color: var(--accent-green); }
 
-        /* Loading state */
-        .loading-overlay {
-            display: none;
-            margin-top: 24px;
-            text-align: center;
-            padding: 40px;
-        }
+        /* Loading */
+        .loading-overlay { display: none; margin-top: 24px; text-align: center; padding: 40px; }
         .loading-overlay.show { display: block; }
         .loader {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border: 3px solid var(--border-subtle);
             border-top-color: var(--accent-green);
             border-radius: 50%;
@@ -313,56 +208,20 @@
             margin: 0 auto 16px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-steps {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 12px;
-        }
-        .loading-step {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .loading-step.active {
-            color: var(--accent-green);
-        }
-        .loading-step .dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--text-muted);
-        }
-        .loading-step.active .dot {
-            background: var(--accent-green);
-            box-shadow: 0 0 8px var(--accent-green);
-        }
+        .loading-steps { display: flex; justify-content: center; gap: 24px; margin-top: 12px; }
+        .loading-step { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .loading-step.active { color: var(--accent-green); }
+        .loading-step .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); }
+        .loading-step.active .dot { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
 
         /* Error */
-        .error-box {
-            display: none;
-            margin-top: 20px;
-            padding: 16px 20px;
-            background: rgba(255,51,102,0.08);
-            border: 1px solid rgba(255,51,102,0.2);
-            border-radius: 12px;
-            color: var(--accent-red);
-            font-size: 0.9rem;
-        }
+        .error-box { display: none; margin-top: 20px; padding: 16px 20px; background: rgba(255,51,102,0.08); border: 1px solid rgba(255,51,102,0.2); border-radius: 12px; color: var(--accent-red); font-size: 0.9rem; }
         .error-box.show { display: flex; align-items: center; gap: 10px; }
 
         /* Results */
-        .results {
-            display: none;
-            margin-top: 24px;
-            animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
+        .results { display: none; margin-top: 24px; animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
         .results.show { display: block; }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Risk hero */
         .risk-hero {
@@ -370,17 +229,12 @@
             border: 1px solid var(--border-subtle);
             border-radius: 20px;
             padding: 36px;
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            position: relative;
-            overflow: hidden;
+            display: flex; align-items: center; gap: 32px;
+            position: relative; overflow: hidden;
         }
         .risk-hero::after {
             content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
         }
         .risk-hero.safe::after { background: linear-gradient(90deg, transparent, var(--accent-green), transparent); }
         .risk-hero.caution::after { background: linear-gradient(90deg, transparent, var(--accent-yellow), transparent); }
@@ -388,291 +242,115 @@
         .risk-hero.scam::after { background: linear-gradient(90deg, transparent, var(--accent-red), transparent); }
 
         .risk-circle {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            position: relative;
+            width: 130px; height: 130px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            flex-shrink: 0; position: relative;
         }
         .risk-circle::before {
             content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            padding: 3px;
+            position: absolute; inset: -3px; border-radius: 50%; padding: 3px;
             background: conic-gradient(from 0deg, transparent 0%, currentColor 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.3;
+            -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.3;
         }
         .risk-circle.safe { background: rgba(0,255,136,0.08); color: var(--accent-green); }
         .risk-circle.caution { background: rgba(255,204,0,0.08); color: var(--accent-yellow); }
         .risk-circle.danger { background: rgba(255,136,0,0.08); color: var(--accent-orange); }
         .risk-circle.scam { background: rgba(255,51,102,0.08); color: var(--accent-red); }
 
-        .risk-number {
-            font-size: 2.8rem;
-            font-weight: 900;
-            line-height: 1;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .risk-max {
-            font-size: 0.7rem;
-            opacity: 0.5;
-            margin-top: 2px;
-        }
+        .risk-number { font-size: 2.8rem; font-weight: 900; line-height: 1; font-family: 'JetBrains Mono', monospace; }
+        .risk-max { font-size: 0.7rem; opacity: 0.5; margin-top: 2px; }
 
-        .risk-details {
-            flex: 1;
-        }
+        .risk-details { flex: 1; }
         .risk-level-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 12px;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px; border-radius: 8px;
+            font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;
         }
         .risk-level-badge.safe { background: rgba(0,255,136,0.1); color: var(--accent-green); }
         .risk-level-badge.caution { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
         .risk-level-badge.danger { background: rgba(255,136,0,0.1); color: var(--accent-orange); }
         .risk-level-badge.scam { background: rgba(255,51,102,0.1); color: var(--accent-red); }
 
-        .risk-token-info {
-            margin-bottom: 8px;
-        }
-        .token-name {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-        .token-address-small {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .token-address-small a {
-            color: var(--accent-cyan);
-            text-decoration: none;
-        }
+        .risk-token-info { margin-bottom: 8px; }
+        .token-name { font-size: 1.3rem; font-weight: 700; }
+        .token-address-small { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+        .token-address-small a { color: var(--accent-cyan); text-decoration: none; }
         .token-address-small a:hover { text-decoration: underline; }
-
-        .risk-recommendation {
-            font-size: 0.92rem;
-            color: var(--text-secondary);
-            margin-top: 10px;
-            line-height: 1.5;
-        }
+        .risk-recommendation { font-size: 0.92rem; color: var(--text-secondary); margin-top: 10px; line-height: 1.5; }
 
         /* Security checks grid */
-        .checks-section {
-            margin-top: 16px;
-        }
-        .checks-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 16px;
-        }
+        .checks-section { margin-top: 16px; }
+        .checks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
         .check-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 14px;
             padding: 18px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
+            display: flex; align-items: center; gap: 14px;
             transition: all 0.2s;
         }
-        .check-card:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255,255,255,0.1);
-        }
-        .check-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
+        .check-card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.1); }
+        .check-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
         .check-icon.pass { background: rgba(0,255,136,0.1); }
         .check-icon.fail { background: rgba(255,51,102,0.1); }
         .check-icon.warn { background: rgba(255,204,0,0.1); }
-
-        .check-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .check-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-        .check-desc {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        .check-status {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
-            white-space: nowrap;
-        }
+        .check-info { flex: 1; min-width: 0; }
+        .check-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+        .check-desc { font-size: 0.75rem; color: var(--text-muted); }
+        .check-status { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
         .check-status.pass { background: rgba(0,255,136,0.1); color: var(--accent-green); }
         .check-status.fail { background: rgba(255,51,102,0.1); color: var(--accent-red); }
         .check-status.warn { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
 
         /* Findings */
-        .findings-section {
-            margin-top: 16px;
-        }
-        .findings-section h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .findings-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .finding-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            font-size: 0.88rem;
-            line-height: 1.4;
-        }
-        .finding-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
+        .findings-section { margin-top: 16px; }
+        .findings-section h3 { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .findings-list { display: flex; flex-direction: column; gap: 8px; }
+        .finding-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; font-size: 0.88rem; line-height: 1.4; }
+        .finding-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .finding-dot.info { background: var(--accent-cyan); }
         .finding-dot.warning { background: var(--accent-yellow); }
         .finding-dot.danger { background: var(--accent-red); }
 
-        /* History */
-        .history-section {
-            margin-top: 40px;
-            padding-bottom: 60px;
-        }
-        .history-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .history-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        .history-clear {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-family: 'Inter', sans-serif;
-        }
-        .history-clear:hover { color: var(--accent-red); }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .history-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 18px;
+        /* Market data */
+        .market-section { margin-top: 16px; }
+        .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+        .market-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
         }
-        .history-item:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255,255,255,0.1);
-        }
-        .history-score {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            flex-shrink: 0;
-        }
+        .market-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .market-value { font-size: 1.1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .market-value.up { color: var(--accent-green); }
+        .market-value.down { color: var(--accent-red); }
+
+        /* History */
+        .history-section { margin-top: 40px; padding-bottom: 60px; }
+        .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .history-header h2 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); }
+        .history-clear { font-size: 0.78rem; color: var(--text-muted); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
+        .history-clear:hover { color: var(--accent-red); }
+        .history-list { display: flex; flex-direction: column; gap: 8px; }
+        .history-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .history-item:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.1); }
+        .history-score { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
         .history-score.safe { background: rgba(0,255,136,0.1); color: var(--accent-green); }
         .history-score.caution { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
         .history-score.danger { background: rgba(255,136,0,0.1); color: var(--accent-orange); }
         .history-score.scam { background: rgba(255,51,102,0.1); color: var(--accent-red); }
-
-        .history-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .history-token {
-            font-size: 0.88rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .history-addr {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        .history-time {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
+        .history-info { flex: 1; min-width: 0; }
+        .history-token { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-addr { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .history-time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
 
         /* Footer */
-        .footer {
-            text-align: center;
-            padding: 30px 0 50px;
-            color: var(--text-muted);
-            font-size: 0.78rem;
-            border-top: 1px solid var(--border-subtle);
-            margin-top: 20px;
-        }
-        .footer a {
-            color: var(--accent-cyan);
-            text-decoration: none;
-        }
+        .footer { text-align: center; padding: 30px 0 50px; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border-subtle); margin-top: 20px; }
+        .footer a { color: var(--accent-cyan); text-decoration: none; }
 
         /* Mobile */
         @media (max-width: 640px) {
@@ -680,22 +358,12 @@
             .logo-text { font-size: 1.6rem; }
             .stats-bar { gap: 20px; }
             .stat-num { font-size: 1.1rem; }
-
-            .input-row {
-                flex-direction: column;
-            }
+            .input-row { flex-direction: column; }
             .chain-select { min-width: auto; }
             .scan-btn { width: 100%; }
-
-            .risk-hero {
-                flex-direction: column;
-                text-align: center;
-                padding: 28px 20px;
-            }
-
-            .checks-grid {
-                grid-template-columns: 1fr;
-            }
+            .risk-hero { flex-direction: column; text-align: center; padding: 28px 20px; }
+            .checks-grid { grid-template-columns: 1fr; }
+            .market-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -789,6 +457,11 @@
                     </div>
                 </div>
 
+                <!-- Market Data -->
+                <div class="market-section" id="marketSection" style="display:none;">
+                    <div class="market-grid" id="marketGrid"></div>
+                </div>
+
                 <!-- Security Checks -->
                 <div class="checks-section">
                     <div class="checks-grid" id="checksGrid"></div>
@@ -813,15 +486,16 @@
 
         <footer class="footer">
             RugGuard Agent • Built for <a href="https://web3.okx.com/xlayer/build-x-hackathon" target="_blank">OKX AI Genesis Hackathon</a>
+            <br><span style="font-size:0.7rem; opacity:0.5;">Powered by GoPlus Security API + DexScreener</span>
         </footer>
     </div>
 
     <script>
-        const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:8000'
-            : 'https://rugguard-api.vercel.app';
+        // ============================================================
+        // RugGuard — Fully Client-Side Token Security Scanner
+        // APIs: GoPlus Security + DexScreener (both free, no auth)
+        // ============================================================
 
-        let scanCount = 0;
         let history = JSON.parse(localStorage.getItem('rugguard_history') || '[]');
 
         // Init
@@ -852,27 +526,18 @@
             document.getElementById('results').classList.remove('show');
             document.getElementById('error').classList.remove('show');
             document.getElementById('scanBtn').disabled = true;
-
-            // Animate steps
             animateSteps();
 
             try {
-                const response = await fetch(`${API_URL}/scan`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ address, chain_id: chainId })
-                });
+                // Fetch security data from GoPlus + market data from DexScreener in parallel
+                const [securityData, marketData] = await Promise.all([
+                    fetchGoPlusSecurity(address, chainId),
+                    fetchDexScreener(address)
+                ]);
 
-                if (!response.ok) {
-                    const data = await response.json();
-                    throw new Error(data.detail || data.error || 'Scan failed');
-                }
-
-                const data = await response.json();
-                if (data.error) throw new Error(data.error);
-
-                displayResults(data, address, chainId);
-                saveHistory(data, address, chainId);
+                const result = analyzeAndScore(securityData, marketData, address, chainId);
+                displayResults(result, address, chainId);
+                saveHistory(result, address, chainId);
             } catch (err) {
                 showError(err.message || 'Network error — try again');
             } finally {
@@ -881,6 +546,208 @@
             }
         }
 
+        // ── GoPlus Security API ──
+        async function fetchGoPlusSecurity(address, chainId) {
+            const url = `https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${address.toLowerCase()}`;
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('GoPlus API unavailable — try again');
+            const json = await resp.json();
+            if (json.code !== 1 || !json.result) throw new Error('Token not found on this chain');
+            const key = address.toLowerCase();
+            return json.result[key] || null;
+        }
+
+        // ── DexScreener API ──
+        async function fetchDexScreener(address) {
+            const url = `https://api.dexscreener.com/latest/dex/tokens/${address}`;
+            const resp = await fetch(url);
+            if (!resp.ok) return null;
+            const json = await resp.json();
+            return (json.pairs && json.pairs.length > 0) ? json.pairs[0] : null;
+        }
+
+        // ── Risk Scoring Engine ──
+        function analyzeAndScore(gp, dex, address, chainId) {
+            let score = 0;
+            const findings = [];
+
+            if (!gp) {
+                // No GoPlus data = unknown token = high risk
+                return {
+                    risk_score: 75,
+                    risk_level: 'Danger',
+                    token_name: dex ? dex.baseToken?.name || 'Unknown' : 'Unknown Token',
+                    token_symbol: dex ? dex.baseToken?.symbol || '' : '',
+                    is_honeypot: false,
+                    is_mintable: false,
+                    is_proxy: false,
+                    owner_can_change_balance: false,
+                    lp_locked: false,
+                    has_blacklist: false,
+                    has_max_tx: false,
+                    top_holder_pct: 0,
+                    findings: ['⚠️ No security data available — proceed with caution'],
+                    recommendation: 'Unable to verify token security. Do your own research before trading.',
+                    dex: dex
+                };
+            }
+
+            // Honeypot check
+            const isHoneypot = gp.is_honeypot === '1';
+            if (isHoneypot) {
+                score += 40;
+                findings.push('🚨 Honeypot detected — cannot sell this token');
+            }
+
+            // Mintable
+            const isMintable = gp.is_mintable === '1';
+            if (isMintable) {
+                score += 15;
+                findings.push('⚠️ Token is mintable — supply can be increased arbitrarily');
+            }
+
+            // Owner privileges
+            const ownerBalance = parseFloat(gp.owner_balance || '0');
+            const totalSupply = parseFloat(gp.total_supply || '1');
+            const ownerPct = totalSupply > 0 ? (ownerBalance / totalSupply) * 100 : 0;
+            const ownerCanChange = gp.owner_change_balance === '1';
+            if (ownerCanChange) {
+                score += 15;
+                findings.push('🚨 Owner can modify balances — extreme manipulation risk');
+            } else if (ownerPct > 20) {
+                score += 8;
+                findings.push(`⚠️ Owner holds ${ownerPct.toFixed(1)}% of supply`);
+            }
+
+            // Proxy contract
+            const isProxy = gp.is_proxy === '1';
+            if (isProxy) {
+                score += 10;
+                findings.push('⚠️ Proxy/upgradeable contract — logic can be changed');
+            }
+
+            // Blacklist
+            const hasBlacklist = gp.is_blacklisted === '1';
+            if (hasBlacklist) {
+                score += 8;
+                findings.push('⚠️ Blacklist function enabled — your wallet could be blocked');
+            }
+
+            // Max TX
+            const hasMaxTx = gp.is_anti_whale === '1' || (gp.max_tx_amount && parseFloat(gp.max_tx_amount) > 0);
+            if (hasMaxTx) {
+                score += 5;
+                findings.push('ℹ️ Max transaction limit detected');
+            }
+
+            // LP locked / LP holders
+            const lpHolderCount = parseInt(gp.lp_holder_count || '0');
+            const lpLocked = lpHolderCount > 0;
+            if (!lpLocked) {
+                score += 10;
+                findings.push('⚠️ Liquidity not locked — rug pull risk');
+            }
+
+            // Top holder concentration
+            const holderList = gp.holders || [];
+            let topHolderPct = 0;
+            if (holderList.length > 0) {
+                const sorted = holderList.sort((a, b) => parseFloat(b.amount || '0') - parseFloat(a.amount || '0'));
+                const top1 = sorted[0];
+                topHolderPct = totalSupply > 0 ? (parseFloat(top1.amount || '0') / totalSupply) * 100 : 0;
+            }
+            if (topHolderPct > 30) {
+                score += 10;
+                findings.push(`⚠️ Top holder owns ${topHolderPct.toFixed(1)}% — whale risk`);
+            } else if (topHolderPct > 15) {
+                score += 3;
+                findings.push(`ℹ️ Top holder owns ${topHolderPct.toFixed(1)}%`);
+            }
+
+            // Open source
+            const isOpenSource = gp.is_open_source === '1';
+            if (isOpenSource) {
+                score -= 5; // bonus for open source
+                findings.push('✅ Contract source code verified');
+            }
+
+            // Holder count
+            const holderCount = parseInt(gp.holder_count || '0');
+            if (holderCount > 10000) {
+                findings.push(`✅ ${holderCount.toLocaleString()} holders — strong community`);
+            } else if (holderCount < 100 && holderCount > 0) {
+                score += 5;
+                findings.push(`⚠️ Only ${holderCount} holders — very low adoption`);
+            }
+
+            // DexScreener bonus info
+            if (dex) {
+                const liq = parseFloat(dex.liquidity?.usd || '0');
+                const vol24h = parseFloat(dex.volume?.h24 || '0');
+                const priceChange = parseFloat(dex.priceChange?.h24 || '0');
+
+                if (liq < 10000) {
+                    score += 8;
+                    findings.push(`⚠️ Very low liquidity: $${liq.toLocaleString()}`);
+                } else if (liq > 1000000) {
+                    findings.push(`✅ High liquidity: $${(liq/1e6).toFixed(1)}M`);
+                }
+                if (Math.abs(priceChange) > 50) {
+                    score += 5;
+                    findings.push(`⚠️ Extreme price movement: ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(1)}% (24h)`);
+                }
+            }
+
+            // Clamp score
+            score = Math.max(0, Math.min(100, score));
+
+            // Determine level
+            let level;
+            if (score <= 15) level = 'Safe';
+            else if (score <= 40) level = 'Caution';
+            else if (score <= 70) level = 'Danger';
+            else level = 'Scam';
+
+            // Generate recommendation
+            let recommendation;
+            if (level === 'Safe') {
+                recommendation = 'This token passes most security checks. Standard DYOR still applies before trading.';
+            } else if (level === 'Caution') {
+                recommendation = 'Some risk factors detected. Review the findings below and proceed carefully.';
+            } else if (level === 'Danger') {
+                recommendation = 'Multiple red flags found. High risk of loss — only trade with money you can afford to lose.';
+            } else {
+                recommendation = 'Severe security issues detected. Strongly avoid — extremely high rug/scam risk.';
+            }
+
+            // Token name from GoPlus
+            let tokenName = gp.token_name || (dex ? dex.baseToken?.name : 'Unknown Token') || 'Unknown Token';
+            let tokenSymbol = gp.token_symbol || (dex ? dex.baseToken?.symbol : '') || '';
+
+            if (findings.length === 0) {
+                findings.push('✅ No significant issues detected');
+            }
+
+            return {
+                risk_score: score,
+                risk_level: level,
+                token_name: tokenName,
+                token_symbol: tokenSymbol,
+                is_honeypot: isHoneypot,
+                is_mintable: isMintable,
+                is_proxy: isProxy,
+                owner_can_change_balance: ownerCanChange,
+                lp_locked: lpLocked,
+                has_blacklist: hasBlacklist,
+                has_max_tx: hasMaxTx,
+                top_holder_pct: topHolderPct,
+                findings: findings,
+                recommendation: recommendation,
+                dex: dex
+            };
+        }
+
+        // ── UI Rendering ──
         function animateSteps() {
             const steps = ['step1', 'step2', 'step3', 'step4'];
             steps.forEach((s, i) => {
@@ -912,15 +779,35 @@
             badge.textContent = data.risk_level.toUpperCase();
 
             // Token info
-            document.getElementById('tokenName').textContent = data.token_name || 'Unknown Token';
-            if (data.token_symbol) {
-                document.getElementById('tokenName').textContent += ` (${data.token_symbol})`;
-            }
+            let displayName = data.token_name || 'Unknown Token';
+            if (data.token_symbol) displayName += ` (${data.token_symbol})`;
+            document.getElementById('tokenName').textContent = displayName;
+
             const chainscan = { 1: 'etherscan.io', 8453: 'basescan.org', 56: 'bscscan.com', 137: 'polygonscan.com', 42161: 'arbiscan.io', 10: 'optimistic.etherscan.io' };
             const scanUrl = `https://${chainscan[chainId] || 'etherscan.io'}/token/${address}`;
             document.getElementById('tokenAddr').innerHTML = `<a href="${scanUrl}" target="_blank">${address.slice(0,6)}...${address.slice(-4)} ↗</a>`;
 
             document.getElementById('riskRec').textContent = data.recommendation;
+
+            // Market data from DexScreener
+            const marketSection = document.getElementById('marketSection');
+            const marketGrid = document.getElementById('marketGrid');
+            if (data.dex) {
+                const d = data.dex;
+                const price = parseFloat(d.priceUsd || '0');
+                const liq = parseFloat(d.liquidity?.usd || '0');
+                const vol = parseFloat(d.volume?.h24 || '0');
+                const pc = parseFloat(d.priceChange?.h24 || '0');
+
+                let html = '';
+                html += `<div class="market-card"><div class="market-label">Price</div><div class="market-value">${price < 0.01 ? '$' + price.toExponential(2) : '$' + formatNum(price)}</div></div>`;
+                html += `<div class="market-card"><div class="market-label">Liquidity</div><div class="market-value">${formatDollars(liq)}</div></div>`;
+                html += `<div class="market-card"><div class="market-label">24h Change</div><div class="market-value ${pc >= 0 ? 'up' : 'down'}">${pc >= 0 ? '+' : ''}${pc.toFixed(1)}%</div></div>`;
+                marketGrid.innerHTML = html;
+                marketSection.style.display = 'block';
+            } else {
+                marketSection.style.display = 'none';
+            }
 
             // Security checks
             const checks = [
@@ -967,8 +854,20 @@
             document.getElementById('results').classList.add('show');
 
             // Update scan count
-            scanCount++;
             document.getElementById('statScans').textContent = history.length + 1;
+        }
+
+        function formatNum(n) {
+            if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+            if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+            if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+            return n.toFixed(2);
+        }
+
+        function formatDollars(n) {
+            if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+            if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+            return '$' + n.toFixed(0);
         }
 
         function showError(msg) {
