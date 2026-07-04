@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RugGuard - AI Token Security Scanner</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -22,13 +23,10 @@
             --text-secondary: #8888aa;
             --text-muted: #555566;
             --border-subtle: rgba(255,255,255,0.06);
-            --border-active: rgba(0,255,136,0.3);
             --glow-green: 0 0 40px rgba(0,255,136,0.15);
-            --glow-red: 0 0 40px rgba(255,51,102,0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             background: var(--bg-primary);
@@ -37,91 +35,69 @@
             overflow-x: hidden;
         }
 
-        /* Ambient background */
         .ambient {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 0;
         }
         .ambient::before {
             content: '';
-            position: absolute;
-            top: -50%; left: -50%;
+            position: absolute; top: -50%; left: -50%;
             width: 200%; height: 200%;
             background: radial-gradient(ellipse at 30% 20%, rgba(0,255,136,0.03) 0%, transparent 50%),
                         radial-gradient(ellipse at 70% 80%, rgba(0,212,255,0.03) 0%, transparent 50%);
-            animation: ambientDrift 20s ease-in-out infinite alternate;
+            animation: drift 20s ease-in-out infinite alternate;
         }
-        @keyframes ambientDrift {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-3%, -3%) rotate(2deg); }
-        }
+        @keyframes drift { 0% { transform: translate(0,0); } 100% { transform: translate(-3%,-3%); } }
 
-        /* Grid overlay */
-        .grid-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+        .grid-bg {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
             background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
 
-        .app {
-            position: relative;
-            z-index: 1;
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+        .app { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 20px; }
 
-        /* Header */
+        /* ── Header ── */
         .header { padding: 50px 0 30px; text-align: center; }
         .logo-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 12px; }
         .logo-icon {
             width: 52px; height: 52px;
             background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 26px;
-            box-shadow: 0 4px 20px rgba(0,255,136,0.25);
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            font-size: 26px; box-shadow: 0 4px 20px rgba(0,255,136,0.25);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%,100% { box-shadow: 0 4px 20px rgba(0,255,136,0.25); }
+            50% { box-shadow: 0 4px 30px rgba(0,255,136,0.4); }
         }
         .logo-text {
             font-size: 2.2rem; font-weight: 800;
             background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
         }
-        .tagline { color: var(--text-secondary); font-size: 1.05rem; font-weight: 400; }
+        .tagline { color: var(--text-secondary); font-size: 1.05rem; }
         .tagline span { color: var(--accent-cyan); font-weight: 600; }
 
-        /* Stats bar */
         .stats-bar {
             display: flex; justify-content: center; gap: 40px;
             margin-top: 24px; padding: 16px 0;
             border-top: 1px solid var(--border-subtle);
             border-bottom: 1px solid var(--border-subtle);
         }
-        .stat-item { text-align: center; }
         .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent-green); font-family: 'JetBrains Mono', monospace; }
         .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
-        /* Scanner */
+        /* ── Scanner ── */
         .scanner { margin-top: 40px; }
         .scanner-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 20px;
-            padding: 32px;
-            position: relative; overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 20px; padding: 32px; position: relative; overflow: hidden;
         }
         .scanner-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent-green), var(--accent-cyan), transparent);
         }
 
@@ -129,35 +105,24 @@
         .address-input { flex: 1; position: relative; }
         .address-input input {
             width: 100%; padding: 16px 20px 16px 48px;
-            background: var(--bg-secondary);
-            border: 1.5px solid var(--border-subtle);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.92rem;
+            background: var(--bg-secondary); border: 1.5px solid var(--border-subtle);
+            border-radius: 12px; color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.92rem;
             transition: all 0.2s; outline: none;
         }
-        .address-input input:focus {
-            border-color: var(--accent-green);
-            box-shadow: 0 0 0 3px rgba(0,255,136,0.1);
-        }
+        .address-input input:focus { border-color: var(--accent-green); box-shadow: 0 0 0 3px rgba(0,255,136,0.1); }
         .address-input input::placeholder { color: var(--text-muted); font-family: 'Inter', sans-serif; }
         .address-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity: 0.5; }
 
         .chain-select {
             min-width: 150px; padding: 16px 20px;
-            background: var(--bg-secondary);
-            border: 1.5px solid var(--border-subtle);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            background: var(--bg-secondary); border: 1.5px solid var(--border-subtle);
+            border-radius: 12px; color: var(--text-primary);
+            font-family: 'Inter', sans-serif; font-size: 0.9rem;
             cursor: pointer; outline: none; appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
+            background-repeat: no-repeat; background-position: right 16px center;
         }
-        .chain-select:focus { border-color: var(--accent-green); }
         .chain-select option { background: var(--bg-secondary); color: var(--text-primary); }
 
         .scan-btn {
@@ -166,75 +131,56 @@
             border: none; border-radius: 12px;
             color: #000; font-family: 'Inter', sans-serif;
             font-size: 0.95rem; font-weight: 700;
-            cursor: pointer; transition: all 0.25s;
-            white-space: nowrap; position: relative; overflow: hidden;
-        }
-        .scan-btn::after {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.5s, height 0.5s;
+            cursor: pointer; transition: all 0.25s; white-space: nowrap;
         }
         .scan-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,255,136,0.3); }
-        .scan-btn:active::after { width: 300px; height: 300px; }
-        .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-        .scan-btn .btn-text { position: relative; z-index: 1; }
+        .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .scan-btn .spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
+        .scan-btn.loading .spinner { display: inline-block; }
+        .scan-btn.loading .btn-text { opacity: 0.7; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .quick-tokens { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
         .quick-token {
-            padding: 6px 14px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-subtle);
-            border-radius: 20px;
-            color: var(--text-secondary);
-            font-size: 0.78rem;
+            padding: 6px 14px; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle); border-radius: 20px;
+            color: var(--text-secondary); font-size: 0.78rem;
             cursor: pointer; transition: all 0.2s;
             font-family: 'JetBrains Mono', monospace;
         }
         .quick-token:hover { background: rgba(0,255,136,0.08); border-color: var(--accent-green); color: var(--accent-green); }
 
-        /* Loading */
+        /* ── Loading ── */
         .loading-overlay { display: none; margin-top: 24px; text-align: center; padding: 40px; }
-        .loading-overlay.show { display: block; }
+        .loading-overlay.show { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .loader {
-            width: 48px; height: 48px;
-            border: 3px solid var(--border-subtle);
-            border-top-color: var(--accent-green);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
+            width: 48px; height: 48px; border: 3px solid var(--border-subtle);
+            border-top-color: var(--accent-green); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
         .loading-steps { display: flex; justify-content: center; gap: 24px; margin-top: 12px; }
         .loading-step { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
         .loading-step.active { color: var(--accent-green); }
         .loading-step .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); }
         .loading-step.active .dot { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
 
-        /* Error */
         .error-box { display: none; margin-top: 20px; padding: 16px 20px; background: rgba(255,51,102,0.08); border: 1px solid rgba(255,51,102,0.2); border-radius: 12px; color: var(--accent-red); font-size: 0.9rem; }
         .error-box.show { display: flex; align-items: center; gap: 10px; }
 
-        /* Results */
-        .results { display: none; margin-top: 24px; animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
-        .results.show { display: block; }
+        /* ── Results ── */
+        .results { display: none; margin-top: 24px; }
+        .results.show { display: block; animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
         @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Risk hero */
         .risk-hero {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 20px;
-            padding: 36px;
-            display: flex; align-items: center; gap: 32px;
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 20px; padding: 36px; display: flex; align-items: center; gap: 32px;
             position: relative; overflow: hidden;
         }
         .risk-hero::after {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
         }
         .risk-hero.safe::after { background: linear-gradient(90deg, transparent, var(--accent-green), transparent); }
         .risk-hero.caution::after { background: linear-gradient(90deg, transparent, var(--accent-yellow), transparent); }
@@ -247,8 +193,7 @@
             flex-shrink: 0; position: relative;
         }
         .risk-circle::before {
-            content: '';
-            position: absolute; inset: -3px; border-radius: 50%; padding: 3px;
+            content: ''; position: absolute; inset: -3px; border-radius: 50%; padding: 3px;
             background: conic-gradient(from 0deg, transparent 0%, currentColor 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.3;
@@ -273,61 +218,81 @@
         .risk-level-badge.danger { background: rgba(255,136,0,0.1); color: var(--accent-orange); }
         .risk-level-badge.scam { background: rgba(255,51,102,0.1); color: var(--accent-red); }
 
-        .risk-token-info { margin-bottom: 8px; }
         .token-name { font-size: 1.3rem; font-weight: 700; }
         .token-address-small { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
         .token-address-small a { color: var(--accent-cyan); text-decoration: none; }
         .token-address-small a:hover { text-decoration: underline; }
         .risk-recommendation { font-size: 0.92rem; color: var(--text-secondary); margin-top: 10px; line-height: 1.5; }
 
-        /* Security checks grid */
+        .share-btns { display: flex; gap: 8px; margin-top: 14px; }
+        .share-btn {
+            padding: 6px 14px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle); border-radius: 8px;
+            color: var(--text-secondary); font-size: 0.78rem; font-family: 'Inter', sans-serif;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .share-btn:hover { background: rgba(0,212,255,0.1); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .share-btn.copied { background: rgba(0,255,136,0.1); border-color: var(--accent-green); color: var(--accent-green); }
+
+        /* Token details */
+        .token-details {
+            margin-top: 16px; background: var(--bg-card);
+            border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px;
+        }
+        .token-details h3 { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .details-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .detail-item { text-align: center; }
+        .detail-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-value { font-size: 0.9rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+
+        /* Market data */
+        .market-section { margin-top: 16px; }
+        .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+        .market-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px; text-align: center; }
+        .market-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .market-value { font-size: 1.1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .market-value.up { color: var(--accent-green); }
+        .market-value.down { color: var(--accent-red); }
+
+        /* Security checks */
         .checks-section { margin-top: 16px; }
         .checks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
         .check-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            padding: 18px;
-            display: flex; align-items: center; gap: 14px;
-            transition: all 0.2s;
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 14px;
+            transition: all 0.2s; animation: fadeIn 0.3s;
         }
-        .check-card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.1); }
+        .check-card:hover { background: var(--bg-card-hover); }
         .check-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
         .check-icon.pass { background: rgba(0,255,136,0.1); }
         .check-icon.fail { background: rgba(255,51,102,0.1); }
         .check-icon.warn { background: rgba(255,204,0,0.1); }
-        .check-info { flex: 1; min-width: 0; }
+        .check-icon.info { background: rgba(0,212,255,0.1); }
         .check-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
         .check-desc { font-size: 0.75rem; color: var(--text-muted); }
-        .check-status { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
+        .check-status { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; white-space: nowrap; margin-left: auto; }
         .check-status.pass { background: rgba(0,255,136,0.1); color: var(--accent-green); }
         .check-status.fail { background: rgba(255,51,102,0.1); color: var(--accent-red); }
         .check-status.warn { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
 
         /* Findings */
         .findings-section { margin-top: 16px; }
-        .findings-section h3 { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .findings-list { display: flex; flex-direction: column; gap: 8px; }
-        .finding-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; font-size: 0.88rem; line-height: 1.4; }
+        .findings-section h3 { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; }
+        .finding-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; font-size: 0.88rem; line-height: 1.4; margin-bottom: 8px; }
         .finding-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .finding-dot.info { background: var(--accent-cyan); }
         .finding-dot.warning { background: var(--accent-yellow); }
         .finding-dot.danger { background: var(--accent-red); }
+        .finding-dot.safe { background: var(--accent-green); }
 
-        /* Market data */
-        .market-section { margin-top: 16px; }
-        .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
-        .market-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            padding: 18px;
-            text-align: center;
+        /* Known badge */
+        .known-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 10px; border-radius: 6px;
+            background: rgba(0,212,255,0.1); color: var(--accent-cyan);
+            font-size: 0.7rem; font-weight: 600; margin-left: 8px;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .market-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .market-value { font-size: 1.1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-        .market-value.up { color: var(--accent-green); }
-        .market-value.down { color: var(--accent-red); }
 
         /* History */
         .history-section { margin-top: 40px; padding-bottom: 60px; }
@@ -335,44 +300,50 @@
         .history-header h2 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); }
         .history-clear { font-size: 0.78rem; color: var(--text-muted); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
         .history-clear:hover { color: var(--accent-red); }
-        .history-list { display: flex; flex-direction: column; gap: 8px; }
-        .history-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .history-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; }
         .history-item:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.1); }
         .history-score { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
         .history-score.safe { background: rgba(0,255,136,0.1); color: var(--accent-green); }
         .history-score.caution { background: rgba(255,204,0,0.1); color: var(--accent-yellow); }
         .history-score.danger { background: rgba(255,136,0,0.1); color: var(--accent-orange); }
         .history-score.scam { background: rgba(255,51,102,0.1); color: var(--accent-red); }
-        .history-info { flex: 1; min-width: 0; }
         .history-token { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .history-addr { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-        .history-time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+        .history-time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; margin-left: auto; }
 
-        /* Footer */
         .footer { text-align: center; padding: 30px 0 50px; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border-subtle); margin-top: 20px; }
         .footer a { color: var(--accent-cyan); text-decoration: none; }
 
-        /* Mobile */
+        /* Stagger animation for checks */
+        .check-card:nth-child(1) { animation-delay: 0.05s; }
+        .check-card:nth-child(2) { animation-delay: 0.1s; }
+        .check-card:nth-child(3) { animation-delay: 0.15s; }
+        .check-card:nth-child(4) { animation-delay: 0.2s; }
+        .check-card:nth-child(5) { animation-delay: 0.25s; }
+        .check-card:nth-child(6) { animation-delay: 0.3s; }
+        .check-card:nth-child(7) { animation-delay: 0.35s; }
+        .check-card:nth-child(8) { animation-delay: 0.4s; }
+
         @media (max-width: 640px) {
             .header { padding: 30px 0 20px; }
             .logo-text { font-size: 1.6rem; }
             .stats-bar { gap: 20px; }
-            .stat-num { font-size: 1.1rem; }
             .input-row { flex-direction: column; }
             .chain-select { min-width: auto; }
             .scan-btn { width: 100%; }
             .risk-hero { flex-direction: column; text-align: center; padding: 28px 20px; }
             .checks-grid { grid-template-columns: 1fr; }
             .market-grid { grid-template-columns: 1fr; }
+            .details-grid { grid-template-columns: repeat(2, 1fr); }
+            .share-btns { justify-content: center; }
         }
     </style>
 </head>
 <body>
     <div class="ambient"></div>
-    <div class="grid-overlay"></div>
+    <div class="grid-bg"></div>
 
     <div class="app">
-        <!-- Header -->
         <header class="header">
             <div class="logo-row">
                 <div class="logo-icon">🛡️</div>
@@ -380,22 +351,12 @@
             </div>
             <p class="tagline">AI-Powered <span>Token Security Scanner</span></p>
             <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="stat-num" id="statScans">0</div>
-                    <div class="stat-label">Scans</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">6</div>
-                    <div class="stat-label">Chains</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">8</div>
-                    <div class="stat-label">Checks</div>
-                </div>
+                <div class="stat-item"><div class="stat-num" id="statScans">0</div><div class="stat-label">Scans</div></div>
+                <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">Chains</div></div>
+                <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Checks</div></div>
             </div>
         </header>
 
-        <!-- Scanner -->
         <section class="scanner">
             <div class="scanner-card">
                 <div class="input-row">
@@ -412,7 +373,7 @@
                         <option value="10">🔴 Optimism</option>
                     </select>
                     <button class="scan-btn" id="scanBtn" onclick="scanToken()">
-                        <span class="btn-text">Scan →</span>
+                        <span class="spinner"></span><span class="btn-text">Scan →</span>
                     </button>
                 </div>
                 <div class="quick-tokens">
@@ -425,7 +386,6 @@
                 </div>
             </div>
 
-            <!-- Loading -->
             <div class="loading-overlay" id="loading">
                 <div class="loader"></div>
                 <p style="color:var(--text-secondary); font-size:0.9rem;">Scanning token security...</p>
@@ -437,10 +397,8 @@
                 </div>
             </div>
 
-            <!-- Error -->
             <div class="error-box" id="error"></div>
 
-            <!-- Results -->
             <div class="results" id="results">
                 <div class="risk-hero" id="riskHero">
                     <div class="risk-circle" id="riskCircle">
@@ -449,12 +407,24 @@
                     </div>
                     <div class="risk-details">
                         <div class="risk-level-badge" id="riskBadge">SAFE</div>
-                        <div class="risk-token-info">
-                            <div class="token-name" id="tokenName">Token</div>
-                            <div class="token-address-small" id="tokenAddr"></div>
+                        <div>
+                            <span class="token-name" id="tokenName">Token</span>
+                            <span id="knownBadge"></span>
                         </div>
+                        <div class="token-address-small" id="tokenAddr"></div>
                         <div class="risk-recommendation" id="riskRec"></div>
+                        <div class="share-btns">
+                            <button class="share-btn" onclick="copyResults()">📋 Copy Results</button>
+                            <button class="share-btn" onclick="shareTwitter()">🐦 Tweet Score</button>
+                            <button class="share-btn" onclick="copyLink()">🔗 Copy Link</button>
+                        </div>
                     </div>
+                </div>
+
+                <!-- Token Details -->
+                <div class="token-details" id="tokenDetailsSection" style="display:none;">
+                    <h3>📄 Contract Details</h3>
+                    <div class="details-grid" id="detailsGrid"></div>
                 </div>
 
                 <!-- Market Data -->
@@ -470,18 +440,17 @@
                 <!-- Findings -->
                 <div class="findings-section" id="findingsSection">
                     <h3>📋 Findings</h3>
-                    <div class="findings-list" id="findingsList"></div>
+                    <div id="findingsList"></div>
                 </div>
             </div>
         </section>
 
-        <!-- History -->
         <section class="history-section" id="historySection" style="display:none;">
             <div class="history-header">
                 <h2>🕐 Recent Scans</h2>
                 <button class="history-clear" onclick="clearHistory()">Clear all</button>
             </div>
-            <div class="history-list" id="historyList"></div>
+            <div id="historyList"></div>
         </section>
 
         <footer class="footer">
@@ -490,449 +459,470 @@
         </footer>
     </div>
 
-    <script>
-        // ============================================================
-        // RugGuard — Fully Client-Side Token Security Scanner
-        // APIs: GoPlus Security + DexScreener (both free, no auth)
-        // ============================================================
+<script>
+// ═══════════════════════════════════════════════════════
+// RugGuard v2 — Client-Side Token Security Scanner
+// APIs: GoPlus + DexScreener (free, no auth, CORS)
+// ═══════════════════════════════════════════════════════
 
-        let history = JSON.parse(localStorage.getItem('rugguard_history') || '[]');
+let history = JSON.parse(localStorage.getItem('rugguard_history') || '[]');
+let lastResult = null;
 
-        // Init
-        document.getElementById('statScans').textContent = history.length;
-        renderHistory();
+// ── Known tokens (context-aware scoring) ──
+const KNOWN_TOKENS = {
+    '0xdac17f958d2ee523a2206206994597c13d831ec7': { name: 'Tether USD', tier: 'bluechip', note: 'Centralized stablecoin — mint/blacklist are expected features' },
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { name: 'USD Coin', tier: 'bluechip', note: 'Circle-issued stablecoin — trusted issuer' },
+    '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': { name: 'Wrapped Ether', tier: 'bluechip', note: 'Wrapped ETH by WETH protocol — battle-tested' },
+    '0x6b175474e89094c44da98b954eedeac495271d0f': { name: 'Dai Stablecoin', tier: 'bluechip', note: 'MakerDAO decentralized stablecoin' },
+    '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': { name: 'Wrapped BTC', tier: 'bluechip', note: 'Wrapped BTC on Ethereum' },
+    '0x514910771af9ca656af840dff83e8264ecf986ca': { name: 'Chainlink', tier: 'bluechip', note: 'LINK token — established oracle network' },
+    '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': { name: 'Lido Staked Ether', tier: 'bluechip', note: 'Lido liquid staking derivative' },
+    '0xae78736cd615f374d3085123a210448e74fc6393': { name: 'Rocket Pool ETH', tier: 'bluechip', note: 'Rocket Pool liquid staking' },
+    '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2': { name: 'SushiToken', tier: 'known', note: 'SushiSwap governance token' },
+    '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': { name: 'Uniswap', tier: 'bluechip', note: 'UNI governance token' },
+    '0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce': { name: 'Shiba Inu', tier: 'known', note: 'Meme token — community driven' },
+    '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0': { name: 'Matic Network', tier: 'bluechip', note: 'Polygon native token' },
+    '0x4fabb145d64652a948d72533023f6e7a623c7c53': { name: 'Binance USD', tier: 'bluechip', note: 'Binance-pegged stablecoin' },
+};
 
-        document.getElementById('tokenAddress').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') scanToken();
-        });
+// ── Init ──
+document.getElementById('statScans').textContent = history.length;
+renderHistory();
+document.getElementById('tokenAddress').addEventListener('keypress', e => { if (e.key === 'Enter') scanToken(); });
 
-        function quickScan(addr, chain) {
-            document.getElementById('tokenAddress').value = addr;
-            document.getElementById('chainId').value = chain;
-            scanToken();
+function quickScan(addr, chain) {
+    document.getElementById('tokenAddress').value = addr;
+    document.getElementById('chainId').value = chain;
+    scanToken();
+}
+
+// ── Main Scan ──
+async function scanToken() {
+    const address = document.getElementById('tokenAddress').value.trim();
+    const chainId = parseInt(document.getElementById('chainId').value);
+    const btn = document.getElementById('scanBtn');
+
+    if (!address || !/^0x[0-9a-fA-F]{40}$/.test(address)) {
+        showError('Enter a valid 0x... contract address');
+        return;
+    }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('error').classList.remove('show');
+    animateSteps();
+
+    try {
+        const [gp, dex] = await Promise.all([
+            fetchGoPlus(address, chainId),
+            fetchDexScreener(address)
+        ]);
+
+        const result = analyze(gp, dex, address, chainId);
+        lastResult = result;
+        displayResults(result, address, chainId);
+        saveHistory(result, address, chainId);
+    } catch (err) {
+        showError(err.message || 'Network error — try again');
+    } finally {
+        document.getElementById('loading').classList.remove('show');
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+
+// ── GoPlus ──
+async function fetchGoPlus(address, chainId) {
+    const r = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${address.toLowerCase()}`);
+    if (!r.ok) throw new Error('GoPlus API unavailable');
+    const j = await r.json();
+    if (j.code !== 1 || !j.result) throw new Error('Token not found on this chain');
+    return j.result[address.toLowerCase()] || null;
+}
+
+// ── DexScreener ──
+async function fetchDexScreener(address) {
+    const r = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${address}`);
+    if (!r.ok) return null;
+    const j = await r.json();
+    // Sort by liquidity descending — pick the biggest/most relevant pair
+    if (j.pairs && j.pairs.length > 0) {
+        j.pairs.sort((a, b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0));
+    }
+    return (j.pairs && j.pairs.length > 0) ? j.pairs[0] : null;
+}
+
+// ── Analysis Engine ──
+function analyze(gp, dex, address, chainId) {
+    const known = KNOWN_TOKENS[address.toLowerCase()];
+    const isKnown = !!known;
+    let score = 0;
+    const findings = [];
+    const checks = {};
+
+    if (!gp) {
+        if (dex) {
+            return buildResult(60, 'Danger', dex.baseToken?.name || 'Unknown', dex.baseToken?.symbol || '',
+                ['No security data — unknown contract'], 'Unable to verify. Do your own research.',
+                {}, dex, address, chainId, isKnown, known);
         }
+        return buildResult(75, 'Scam', 'Unknown', '',
+            ['No data available at all'], 'Cannot find token. Verify the address.',
+            {}, null, address, chainId, false, null);
+    }
 
-        async function scanToken() {
-            const address = document.getElementById('tokenAddress').value.trim();
-            const chainId = parseInt(document.getElementById('chainId').value);
+    // ── Honeypot ──
+    const isHoneypot = gp.is_honeypot === '1';
+    checks.honeypot = { pass: !isHoneypot, desc: 'Can you sell?' };
+    if (isHoneypot) { score += 35; findings.push({ text: 'Cannot sell this token', level: 'danger' }); }
 
-            if (!address || !address.startsWith('0x') || address.length !== 42) {
-                showError('Enter a valid contract address (0x...)');
-                return;
-            }
+    // ── Mintable ──
+    const isMintable = gp.is_mintable === '1';
+    if (isKnown && known.tier === 'bluechip' && isMintable) {
+        checks.mintable = { pass: true, desc: 'Supply increase risk', note: 'Expected' };
+        findings.push({ text: `Mintable — expected for ${known.name}`, level: 'safe' });
+    } else {
+        checks.mintable = { pass: !isMintable, desc: 'Supply increase risk' };
+        if (isMintable) { score += 15; findings.push({ text: 'Token is mintable — supply can increase', level: 'warning' }); }
+    }
 
-            // Show loading
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('results').classList.remove('show');
-            document.getElementById('error').classList.remove('show');
-            document.getElementById('scanBtn').disabled = true;
-            animateSteps();
+    // ── Proxy ──
+    const isProxy = gp.is_proxy === '1';
+    checks.proxy = { pass: !isProxy, desc: 'Upgradeable logic' };
+    if (isProxy) { score += 10; findings.push({ text: 'Proxy contract — logic can change', level: 'warning' }); }
 
-            try {
-                // Fetch security data from GoPlus + market data from DexScreener in parallel
-                const [securityData, marketData] = await Promise.all([
-                    fetchGoPlusSecurity(address, chainId),
-                    fetchDexScreener(address)
-                ]);
+    // ── Owner balance ──
+    const ownerBal = parseFloat(gp.owner_balance || '0');
+    const supply = parseFloat(gp.total_supply || '1');
+    const ownerPct = supply > 0 ? (ownerBal / supply) * 100 : 0;
+    const ownerCanChange = gp.owner_change_balance === '1';
 
-                const result = analyzeAndScore(securityData, marketData, address, chainId);
-                displayResults(result, address, chainId);
-                saveHistory(result, address, chainId);
-            } catch (err) {
-                showError(err.message || 'Network error — try again');
-            } finally {
-                document.getElementById('loading').classList.remove('show');
-                document.getElementById('scanBtn').disabled = false;
-            }
+    if (isKnown && known.tier === 'bluechip' && ownerCanChange) {
+        checks.owner = { pass: true, desc: 'Balance manipulation', note: 'Trusted issuer' };
+        findings.push({ text: `Owner balance control — expected for trusted issuer`, level: 'safe' });
+    } else {
+        checks.owner = { pass: !ownerCanChange && ownerPct <= 20, desc: 'Balance manipulation' };
+        if (ownerCanChange) { score += 15; findings.push({ text: 'Owner can modify balances', level: 'danger' }); }
+        else if (ownerPct > 20) { score += 8; findings.push({ text: `Owner holds ${ownerPct.toFixed(1)}% of supply`, level: 'warning' }); }
+    }
+
+    // ── Blacklist ──
+    const hasBlacklist = gp.is_blacklisted === '1';
+    if (isKnown && known.tier === 'bluechip' && hasBlacklist) {
+        checks.blacklist = { pass: true, desc: 'Can block wallets', note: 'Expected' };
+        findings.push({ text: `Blacklist enabled — standard for ${known.name}`, level: 'safe' });
+    } else {
+        checks.blacklist = { pass: !hasBlacklist, desc: 'Can block wallets' };
+        if (hasBlacklist) { score += 8; findings.push({ text: 'Blacklist function enabled', level: 'warning' }); }
+    }
+
+    // ── Max TX ──
+    const hasMaxTx = gp.is_anti_whale === '1';
+    checks.maxTx = { pass: !hasMaxTx, desc: 'Trading restrictions' };
+    if (hasMaxTx) { score += 4; findings.push({ text: 'Max transaction limit detected', level: 'info' }); }
+
+    // ── LP ──
+    const lpHolderCount = parseInt(gp.lp_holder_count || '0');
+    checks.lpLocked = { pass: lpHolderCount > 0, desc: 'Liquidity secured' };
+    if (lpHolderCount === 0) { score += 10; findings.push({ text: 'Liquidity not locked', level: 'warning' }); }
+
+    // ── Top holders ──
+    const holders = gp.holders || [];
+    let topPct = 0;
+    if (holders.length > 0) {
+        const top1 = holders.sort((a, b) => parseFloat(b.amount || '0') - parseFloat(a.amount || '0'))[0];
+        topPct = supply > 0 ? (parseFloat(top1.amount || '0') / supply) * 100 : 0;
+    }
+    checks.holders = { pass: topPct < 30, desc: 'Whale concentration' };
+    if (topPct > 30) { score += 10; findings.push({ text: `Top holder: ${topPct.toFixed(1)}%`, level: 'danger' }); }
+    else if (topPct > 15) { score += 3; findings.push({ text: `Top holder: ${topPct.toFixed(1)}%`, level: 'info' }); }
+
+    // ── Open source ──
+    const isOpenSource = gp.is_open_source === '1';
+    checks.source = { pass: isOpenSource, desc: 'Verified contract' };
+    if (isOpenSource) { findings.push({ text: 'Source code verified', level: 'safe' }); }
+
+    // ── Holder count ──
+    const holderCount = parseInt(gp.holder_count || '0');
+    checks.community = { pass: holderCount > 100, desc: 'Community size' };
+    if (holderCount > 10000) { findings.push({ text: `${holderCount.toLocaleString()} holders`, level: 'safe' }); }
+    else if (holderCount < 100 && holderCount > 0) { score += 5; findings.push({ text: `Only ${holderCount} holders`, level: 'warning' }); }
+
+    // ── DexScreener extras ──
+    if (dex) {
+        const liq = parseFloat(dex.liquidity?.usd || '0');
+        const pc = parseFloat(dex.priceChange?.h24 || '0');
+        if (liq < 10000) { score += 8; findings.push({ text: `Very low liquidity: $${fmtN(liq)}`, level: 'warning' }); }
+        else if (liq > 100000) { findings.push({ text: `Liquidity: $${fmtDollars(liq)}`, level: 'safe' }); }
+        if (Math.abs(pc) > 50) { score += 5; findings.push({ text: `Price ${pc > 0 ? '+' : ''}${pc.toFixed(1)}% (24h)`, level: 'warning' }); }
+    }
+
+    score = Math.max(0, Math.min(100, score));
+
+    // Bluechip override: cap aggressively for trusted tokens
+    if (isKnown) {
+        if (known.tier === 'bluechip') {
+            score = Math.min(score, 10);
+        } else if (known.tier === 'known') {
+            score = Math.min(score, 25);
         }
+    }
 
-        // ── GoPlus Security API ──
-        async function fetchGoPlusSecurity(address, chainId) {
-            const url = `https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${address.toLowerCase()}`;
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error('GoPlus API unavailable — try again');
-            const json = await resp.json();
-            if (json.code !== 1 || !json.result) throw new Error('Token not found on this chain');
-            const key = address.toLowerCase();
-            return json.result[key] || null;
-        }
+    const level = score <= 15 ? 'Safe' : score <= 40 ? 'Caution' : score <= 70 ? 'Danger' : 'Scam';
+    const tokenName = gp.token_name || (dex ? dex.baseToken?.name : '') || 'Unknown';
+    const tokenSymbol = gp.token_symbol || (dex ? dex.baseToken?.symbol : '') || '';
+    const rec = level === 'Safe' ? 'Passes security checks. Standard DYOR applies.'
+        : level === 'Caution' ? 'Some risk factors detected. Review findings carefully.'
+        : level === 'Danger' ? 'Multiple red flags. High risk of loss.'
+        : 'Severe issues. Strongly avoid.';
 
-        // ── DexScreener API ──
-        async function fetchDexScreener(address) {
-            const url = `https://api.dexscreener.com/latest/dex/tokens/${address}`;
-            const resp = await fetch(url);
-            if (!resp.ok) return null;
-            const json = await resp.json();
-            return (json.pairs && json.pairs.length > 0) ? json.pairs[0] : null;
-        }
+    const tokenDetails = {
+        decimals: gp.decimals,
+        totalSupply: supply,
+        holderCount: holderCount,
+        contractCreator: gp.contract_creator,
+        creatorPercent: gp.creator_percent ? parseFloat(gp.creator_percent) : null,
+    };
 
-        // ── Risk Scoring Engine ──
-        function analyzeAndScore(gp, dex, address, chainId) {
-            let score = 0;
-            const findings = [];
+    if (findings.length === 0) findings.push({ text: 'No significant issues detected', level: 'safe' });
 
-            if (!gp) {
-                // No GoPlus data = unknown token = high risk
-                return {
-                    risk_score: 75,
-                    risk_level: 'Danger',
-                    token_name: dex ? dex.baseToken?.name || 'Unknown' : 'Unknown Token',
-                    token_symbol: dex ? dex.baseToken?.symbol || '' : '',
-                    is_honeypot: false,
-                    is_mintable: false,
-                    is_proxy: false,
-                    owner_can_change_balance: false,
-                    lp_locked: false,
-                    has_blacklist: false,
-                    has_max_tx: false,
-                    top_holder_pct: 0,
-                    findings: ['⚠️ No security data available — proceed with caution'],
-                    recommendation: 'Unable to verify token security. Do your own research before trading.',
-                    dex: dex
-                };
-            }
+    return buildResult(score, level, tokenName, tokenSymbol, findings, rec, checks, dex, address, chainId, isKnown, known, tokenDetails);
+}
 
-            // Honeypot check
-            const isHoneypot = gp.is_honeypot === '1';
-            if (isHoneypot) {
-                score += 40;
-                findings.push('🚨 Honeypot detected — cannot sell this token');
-            }
+function buildResult(score, level, name, symbol, findings, rec, checks, dex, address, chainId, isKnown, knownInfo, details) {
+    return { risk_score: score, risk_level: level, token_name: name, token_symbol: symbol,
+        findings, recommendation: rec, checks, dex, address, chainId, isKnown, knownInfo,
+        details: details || {} };
+}
 
-            // Mintable
-            const isMintable = gp.is_mintable === '1';
-            if (isMintable) {
-                score += 15;
-                findings.push('⚠️ Token is mintable — supply can be increased arbitrarily');
-            }
+// ── Display ──
+function displayResults(r, address, chainId) {
+    const level = r.risk_level.toLowerCase();
+    const hero = document.getElementById('riskHero');
+    hero.className = 'risk-hero ' + level;
+    hero.style.animation = 'none'; hero.offsetHeight; hero.style.animation = '';
 
-            // Owner privileges
-            const ownerBalance = parseFloat(gp.owner_balance || '0');
-            const totalSupply = parseFloat(gp.total_supply || '1');
-            const ownerPct = totalSupply > 0 ? (ownerBalance / totalSupply) * 100 : 0;
-            const ownerCanChange = gp.owner_change_balance === '1';
-            if (ownerCanChange) {
-                score += 15;
-                findings.push('🚨 Owner can modify balances — extreme manipulation risk');
-            } else if (ownerPct > 20) {
-                score += 8;
-                findings.push(`⚠️ Owner holds ${ownerPct.toFixed(1)}% of supply`);
-            }
+    document.getElementById('riskCircle').className = 'risk-circle ' + level;
+    animateNumber('riskScore', r.risk_score);
 
-            // Proxy contract
-            const isProxy = gp.is_proxy === '1';
-            if (isProxy) {
-                score += 10;
-                findings.push('⚠️ Proxy/upgradeable contract — logic can be changed');
-            }
+    const badge = document.getElementById('riskBadge');
+    badge.className = 'risk-level-badge ' + level;
+    badge.textContent = r.risk_level.toUpperCase();
 
-            // Blacklist
-            const hasBlacklist = gp.is_blacklisted === '1';
-            if (hasBlacklist) {
-                score += 8;
-                findings.push('⚠️ Blacklist function enabled — your wallet could be blocked');
-            }
+    let dispName = r.token_name;
+    if (r.token_symbol) dispName += ` (${r.token_symbol})`;
+    document.getElementById('tokenName').textContent = dispName;
 
-            // Max TX
-            const hasMaxTx = gp.is_anti_whale === '1' || (gp.max_tx_amount && parseFloat(gp.max_tx_amount) > 0);
-            if (hasMaxTx) {
-                score += 5;
-                findings.push('ℹ️ Max transaction limit detected');
-            }
+    document.getElementById('knownBadge').innerHTML = r.isKnown ? '<span class="known-badge">✓ Verified</span>' : '';
 
-            // LP locked / LP holders
-            const lpHolderCount = parseInt(gp.lp_holder_count || '0');
-            const lpLocked = lpHolderCount > 0;
-            if (!lpLocked) {
-                score += 10;
-                findings.push('⚠️ Liquidity not locked — rug pull risk');
-            }
+    const scanUrls = { 1:'etherscan.io', 8453:'basescan.org', 56:'bscscan.com', 137:'polygonscan.com', 42161:'arbiscan.io', 10:'optimistic.etherscan.io' };
+    document.getElementById('tokenAddr').innerHTML = `<a href="https://${scanUrls[chainId]||'etherscan.io'}/token/${address}" target="_blank">${address.slice(0,6)}...${address.slice(-4)} ↗</a>`;
 
-            // Top holder concentration
-            const holderList = gp.holders || [];
-            let topHolderPct = 0;
-            if (holderList.length > 0) {
-                const sorted = holderList.sort((a, b) => parseFloat(b.amount || '0') - parseFloat(a.amount || '0'));
-                const top1 = sorted[0];
-                topHolderPct = totalSupply > 0 ? (parseFloat(top1.amount || '0') / totalSupply) * 100 : 0;
-            }
-            if (topHolderPct > 30) {
-                score += 10;
-                findings.push(`⚠️ Top holder owns ${topHolderPct.toFixed(1)}% — whale risk`);
-            } else if (topHolderPct > 15) {
-                score += 3;
-                findings.push(`ℹ️ Top holder owns ${topHolderPct.toFixed(1)}%`);
-            }
+    let rec = r.recommendation;
+    if (r.isKnown && r.knownInfo?.note) rec = r.knownInfo.note + '. ' + rec;
+    document.getElementById('riskRec').textContent = rec;
 
-            // Open source
-            const isOpenSource = gp.is_open_source === '1';
-            if (isOpenSource) {
-                score -= 5; // bonus for open source
-                findings.push('✅ Contract source code verified');
-            }
+    // Token details
+    const det = r.details || {};
+    const detSection = document.getElementById('tokenDetailsSection');
+    if (det.decimals || det.totalSupply || det.holderCount) {
+        detSection.style.display = 'block';
+        let detHtml = '';
+        if (det.decimals) detHtml += `<div class="detail-item"><div class="detail-label">Decimals</div><div class="detail-value">${det.decimals}</div></div>`;
+        if (det.totalSupply) detHtml += `<div class="detail-item"><div class="detail-label">Total Supply</div><div class="detail-value">${fmtSupply(det.totalSupply, det.decimals)}</div></div>`;
+        if (det.holderCount) detHtml += `<div class="detail-item"><div class="detail-label">Holders</div><div class="detail-value">${parseInt(det.holderCount).toLocaleString()}</div></div>`;
+        if (det.contractCreator) detHtml += `<div class="detail-item"><div class="detail-label">Creator</div><div class="detail-value" style="font-size:0.75rem;">${det.contractCreator.slice(0,6)}...${det.contractCreator.slice(-4)}</div></div>`;
+        if (det.creatorPercent) detHtml += `<div class="detail-item"><div class="detail-label">Creator Holdings</div><div class="detail-value">${det.creatorPercent.toFixed(2)}%</div></div>`;
+        document.getElementById('detailsGrid').innerHTML = detHtml;
+    } else { detSection.style.display = 'none'; }
 
-            // Holder count
-            const holderCount = parseInt(gp.holder_count || '0');
-            if (holderCount > 10000) {
-                findings.push(`✅ ${holderCount.toLocaleString()} holders — strong community`);
-            } else if (holderCount < 100 && holderCount > 0) {
-                score += 5;
-                findings.push(`⚠️ Only ${holderCount} holders — very low adoption`);
-            }
+    // Market data
+    const mSection = document.getElementById('marketSection');
+    if (r.dex) {
+        const d = r.dex;
+        const price = parseFloat(d.priceUsd || '0');
+        const liq = parseFloat(d.liquidity?.usd || '0');
+        const vol = parseFloat(d.volume?.h24 || '0');
+        const pc = parseFloat(d.priceChange?.h24 || '0');
+        let mh = '';
+        mh += `<div class="market-card"><div class="market-label">Price</div><div class="market-value">${price < 0.001 ? '$'+price.toExponential(2) : '$'+fmtN(price)}</div></div>`;
+        mh += `<div class="market-card"><div class="market-label">Liquidity</div><div class="market-value">${fmtDollars(liq)}</div></div>`;
+        mh += `<div class="market-card"><div class="market-label">24h Change</div><div class="market-value ${pc>=0?'up':'down'}">${pc>=0?'+':''}${pc.toFixed(1)}%</div></div>`;
+        document.getElementById('marketGrid').innerHTML = mh;
+        mSection.style.display = 'block';
+    } else { mSection.style.display = 'none'; }
 
-            // DexScreener bonus info
-            if (dex) {
-                const liq = parseFloat(dex.liquidity?.usd || '0');
-                const vol24h = parseFloat(dex.volume?.h24 || '0');
-                const priceChange = parseFloat(dex.priceChange?.h24 || '0');
+    // Checks
+    const checkEntries = [
+        ['honeypot', 'Honeypot', 'Sell check'], ['mintable', 'Mintable', 'Supply risk'],
+        ['proxy', 'Proxy Contract', 'Upgradeable'], ['owner', 'Owner Privileges', 'Balance ctrl'],
+        ['lpLocked', 'LP Locked', 'Liquidity'], ['blacklist', 'Blacklist', 'Wallet block'],
+        ['maxTx', 'Max TX Limit', 'Trade limit'], ['holders', 'Top Holders', 'Whale risk'],
+        ['source', 'Open Source', 'Verified'], ['community', 'Community', 'Holder count'],
+    ];
+    document.getElementById('checksGrid').innerHTML = checkEntries.map(([k, name, desc]) => {
+        const c = r.checks[k];
+        if (!c) return '';
+        const s = c.pass ? 'pass' : 'fail';
+        const icon = c.pass ? '✓' : '✗';
+        const note = c.note ? ` <span style="color:var(--accent-cyan);font-size:0.7rem;">(${c.note})</span>` : '';
+        return `<div class="check-card"><div class="check-icon ${s}">${icon}</div><div style="flex:1;min-width:0;"><div class="check-name">${name}${note}</div><div class="check-desc">${desc}</div></div><div class="check-status ${s}">${c.pass?'Pass':'Fail'}</div></div>`;
+    }).join('');
 
-                if (liq < 10000) {
-                    score += 8;
-                    findings.push(`⚠️ Very low liquidity: $${liq.toLocaleString()}`);
-                } else if (liq > 1000000) {
-                    findings.push(`✅ High liquidity: $${(liq/1e6).toFixed(1)}M`);
-                }
-                if (Math.abs(priceChange) > 50) {
-                    score += 5;
-                    findings.push(`⚠️ Extreme price movement: ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(1)}% (24h)`);
-                }
-            }
+    // Findings
+    document.getElementById('findingsList').innerHTML = r.findings.map(f => {
+        const lvl = f.level || 'info';
+        return `<div class="finding-item"><span class="finding-dot ${lvl}"></span>${f.text}</div>`;
+    }).join('');
 
-            // Clamp score
-            score = Math.max(0, Math.min(100, score));
+    document.getElementById('results').classList.add('show');
+    document.getElementById('statScans').textContent = history.length;
+}
 
-            // Determine level
-            let level;
-            if (score <= 15) level = 'Safe';
-            else if (score <= 40) level = 'Caution';
-            else if (score <= 70) level = 'Danger';
-            else level = 'Scam';
+// ── Animations ──
+function animateSteps() {
+    const steps = ['step1','step2','step3','step4'];
+    steps.forEach((s, i) => {
+        setTimeout(() => {
+            steps.forEach(x => document.getElementById(x).classList.remove('active'));
+            document.getElementById(s).classList.add('active');
+        }, (i + 1) * 400);
+    });
+}
 
-            // Generate recommendation
-            let recommendation;
-            if (level === 'Safe') {
-                recommendation = 'This token passes most security checks. Standard DYOR still applies before trading.';
-            } else if (level === 'Caution') {
-                recommendation = 'Some risk factors detected. Review the findings below and proceed carefully.';
-            } else if (level === 'Danger') {
-                recommendation = 'Multiple red flags found. High risk of loss — only trade with money you can afford to lose.';
-            } else {
-                recommendation = 'Severe security issues detected. Strongly avoid — extremely high rug/scam risk.';
-            }
+function animateNumber(id, target) {
+    const el = document.getElementById(id);
+    let current = 0;
+    const step = Math.max(1, Math.floor(target / 20));
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = current;
+    }, 30);
+}
 
-            // Token name from GoPlus
-            let tokenName = gp.token_name || (dex ? dex.baseToken?.name : 'Unknown Token') || 'Unknown Token';
-            let tokenSymbol = gp.token_symbol || (dex ? dex.baseToken?.symbol : '') || '';
+// ── Sharing ──
+function copyResults() {
+    if (!lastResult) return;
+    const r = lastResult;
+    const lines = [
+        `🛡️ RugGuard Scan Result`,
+        ``,
+        `Token: ${r.token_name} (${r.token_symbol || '?'})`,
+        `Risk Score: ${r.risk_score}/100 — ${r.risk_level.toUpperCase()}`,
+        `Chain: ${chainNames[r.chainId] || r.chainId}`,
+        ``,
+        `Findings:`,
+        ...r.findings.map(f => `• ${f.text}`),
+        ``,
+        `Scan at: https://0xluccid.github.io/rugguard-agent/`
+    ];
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        const btn = event.target; btn.textContent = '✓ Copied'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '📋 Copy Results'; btn.classList.remove('copied'); }, 2000);
+    });
+}
 
-            if (findings.length === 0) {
-                findings.push('✅ No significant issues detected');
-            }
+function shareTwitter() {
+    if (!lastResult) return;
+    const r = lastResult;
+    const text = `🛡️ ${r.token_name} (${r.token_symbol || '?'}) — Risk: ${r.risk_score}/100 (${r.risk_level})\n\nScan any token at rugguard-agent.vercel.app\n\n#OKXAI #Web3Security #RugPull`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+}
 
-            return {
-                risk_score: score,
-                risk_level: level,
-                token_name: tokenName,
-                token_symbol: tokenSymbol,
-                is_honeypot: isHoneypot,
-                is_mintable: isMintable,
-                is_proxy: isProxy,
-                owner_can_change_balance: ownerCanChange,
-                lp_locked: lpLocked,
-                has_blacklist: hasBlacklist,
-                has_max_tx: hasMaxTx,
-                top_holder_pct: topHolderPct,
-                findings: findings,
-                recommendation: recommendation,
-                dex: dex
-            };
-        }
+function copyLink() {
+    const addr = lastResult?.address;
+    const chain = lastResult?.chainId;
+    if (!addr) return;
+    const url = `https://0xluccid.github.io/rugguard-agent/?address=${addr}&chain=${chain}`;
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = event.target; btn.textContent = '✓ Copied'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '🔗 Copy Link'; btn.classList.remove('copied'); }, 2000);
+    });
+}
 
-        // ── UI Rendering ──
-        function animateSteps() {
-            const steps = ['step1', 'step2', 'step3', 'step4'];
-            steps.forEach((s, i) => {
-                setTimeout(() => {
-                    steps.forEach(x => document.getElementById(x).classList.remove('active'));
-                    document.getElementById(s).classList.add('active');
-                }, (i + 1) * 400);
-            });
-        }
+const chainNames = { 1:'Ethereum', 8453:'Base', 56:'BNB Chain', 137:'Polygon', 42161:'Arbitrum', 10:'Optimism' };
 
-        function displayResults(data, address, chainId) {
-            const score = data.risk_score;
-            const level = data.risk_level.toLowerCase();
+// ── History ──
+function saveHistory(r, address, chainId) {
+    const entry = { address, chainId, score: r.risk_score, level: r.risk_level,
+        name: r.token_name, symbol: r.token_symbol, time: Date.now() };
+    history.unshift(entry);
+    if (history.length > 20) history = history.slice(0, 20);
+    localStorage.setItem('rugguard_history', JSON.stringify(history));
+    renderHistory();
+}
 
-            // Risk hero
-            const hero = document.getElementById('riskHero');
-            hero.className = 'risk-hero ' + level;
-            hero.style.animation = 'none';
-            hero.offsetHeight;
-            hero.style.animation = '';
+function renderHistory() {
+    const sec = document.getElementById('historySection');
+    const list = document.getElementById('historyList');
+    if (history.length === 0) { sec.style.display = 'none'; return; }
+    sec.style.display = 'block';
+    list.innerHTML = history.slice(0, 10).map(h => {
+        const lv = h.level.toLowerCase();
+        const name = h.symbol ? `${h.name} (${h.symbol})` : h.name;
+        return `<div class="history-item" onclick="quickScan('${h.address}',${h.chainId})">
+            <div class="history-score ${lv}">${h.score}</div>
+            <div style="flex:1;min-width:0;"><div class="history-token">${name}</div><div class="history-addr">${h.address.slice(0,10)}...${h.address.slice(-6)}</div></div>
+            <div class="history-time">${timeAgo(h.time)}</div>
+        </div>`;
+    }).join('');
+}
 
-            const circle = document.getElementById('riskCircle');
-            circle.className = 'risk-circle ' + level;
+function timeAgo(ts) {
+    const d = Math.floor((Date.now() - ts) / 1000);
+    if (d < 60) return 'now';
+    if (d < 3600) return Math.floor(d/60) + 'm';
+    if (d < 86400) return Math.floor(d/3600) + 'h';
+    return Math.floor(d/86400) + 'd';
+}
 
-            document.getElementById('riskScore').textContent = score;
+function clearHistory() {
+    history = []; localStorage.removeItem('rugguard_history');
+    renderHistory(); document.getElementById('statScans').textContent = '0';
+}
 
-            const badge = document.getElementById('riskBadge');
-            badge.className = 'risk-level-badge ' + level;
-            badge.textContent = data.risk_level.toUpperCase();
+// ── Formatting ──
+function fmtN(n) {
+    if (n >= 1e9) return (n/1e9).toFixed(2) + 'B';
+    if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+    if (n >= 1) return n.toFixed(2);
+    return n.toFixed(6);
+}
+function fmtDollars(n) {
+    if (n >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return '$' + (n/1e3).toFixed(0) + 'K';
+    return '$' + n.toFixed(0);
+}
+function fmtSupply(supply, decimals) {
+    const d = parseInt(decimals || '18');
+    const val = supply / Math.pow(10, d);
+    if (val >= 1e12) return (val/1e12).toFixed(1) + 'T';
+    if (val >= 1e9) return (val/1e9).toFixed(1) + 'B';
+    if (val >= 1e6) return (val/1e6).toFixed(1) + 'M';
+    if (val >= 1e3) return (val/1e3).toFixed(1) + 'K';
+    return val.toFixed(0);
+}
 
-            // Token info
-            let displayName = data.token_name || 'Unknown Token';
-            if (data.token_symbol) displayName += ` (${data.token_symbol})`;
-            document.getElementById('tokenName').textContent = displayName;
+function showError(msg) {
+    const el = document.getElementById('error');
+    el.textContent = msg; el.classList.add('show');
+}
 
-            const chainscan = { 1: 'etherscan.io', 8453: 'basescan.org', 56: 'bscscan.com', 137: 'polygonscan.com', 42161: 'arbiscan.io', 10: 'optimistic.etherscan.io' };
-            const scanUrl = `https://${chainscan[chainId] || 'etherscan.io'}/token/${address}`;
-            document.getElementById('tokenAddr').innerHTML = `<a href="${scanUrl}" target="_blank">${address.slice(0,6)}...${address.slice(-4)} ↗</a>`;
-
-            document.getElementById('riskRec').textContent = data.recommendation;
-
-            // Market data from DexScreener
-            const marketSection = document.getElementById('marketSection');
-            const marketGrid = document.getElementById('marketGrid');
-            if (data.dex) {
-                const d = data.dex;
-                const price = parseFloat(d.priceUsd || '0');
-                const liq = parseFloat(d.liquidity?.usd || '0');
-                const vol = parseFloat(d.volume?.h24 || '0');
-                const pc = parseFloat(d.priceChange?.h24 || '0');
-
-                let html = '';
-                html += `<div class="market-card"><div class="market-label">Price</div><div class="market-value">${price < 0.01 ? '$' + price.toExponential(2) : '$' + formatNum(price)}</div></div>`;
-                html += `<div class="market-card"><div class="market-label">Liquidity</div><div class="market-value">${formatDollars(liq)}</div></div>`;
-                html += `<div class="market-card"><div class="market-label">24h Change</div><div class="market-value ${pc >= 0 ? 'up' : 'down'}">${pc >= 0 ? '+' : ''}${pc.toFixed(1)}%</div></div>`;
-                marketGrid.innerHTML = html;
-                marketSection.style.display = 'block';
-            } else {
-                marketSection.style.display = 'none';
-            }
-
-            // Security checks
-            const checks = [
-                { name: 'Honeypot', desc: 'Can you sell?', pass: !data.is_honeypot },
-                { name: 'Mintable', desc: 'Supply increase risk', pass: !data.is_mintable },
-                { name: 'Proxy Contract', desc: 'Upgradeable logic', pass: !data.is_proxy },
-                { name: 'Owner Privileges', desc: 'Balance manipulation', pass: !data.owner_can_change_balance },
-                { name: 'LP Locked', desc: 'Liquidity secured', pass: data.lp_locked },
-                { name: 'Blacklist', desc: 'Can block wallets', pass: !data.has_blacklist },
-                { name: 'Max TX Limit', desc: 'Trading restrictions', pass: !data.has_max_tx },
-                { name: 'Top Holders', desc: 'Whale concentration', pass: data.top_holder_pct < 30 },
-            ];
-
-            document.getElementById('checksGrid').innerHTML = checks.map(c => {
-                const status = c.pass ? 'pass' : 'fail';
-                const icon = c.pass ? '✓' : '✗';
-                return `
-                    <div class="check-card">
-                        <div class="check-icon ${status}">${icon}</div>
-                        <div class="check-info">
-                            <div class="check-name">${c.name}</div>
-                            <div class="check-desc">${c.desc}</div>
-                        </div>
-                        <div class="check-status ${status}">${c.pass ? 'Pass' : 'Fail'}</div>
-                    </div>
-                `;
-            }).join('');
-
-            // Findings
-            const findings = data.findings || [];
-            if (findings.length > 0) {
-                document.getElementById('findingsSection').style.display = 'block';
-                document.getElementById('findingsList').innerHTML = findings.map(f => {
-                    let dot = 'info';
-                    if (f.includes('🚨') || f.includes('High')) dot = 'danger';
-                    else if (f.includes('⚠️') || f.includes('Warning')) dot = 'warning';
-                    const cleanText = f.replace(/[🚨⚠️✅]/g, '').trim();
-                    return `<div class="finding-item"><span class="finding-dot ${dot}"></span>${cleanText}</div>`;
-                }).join('');
-            } else {
-                document.getElementById('findingsSection').style.display = 'none';
-            }
-
-            document.getElementById('results').classList.add('show');
-
-            // Update scan count
-            document.getElementById('statScans').textContent = history.length + 1;
-        }
-
-        function formatNum(n) {
-            if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
-            if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
-            if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
-            return n.toFixed(2);
-        }
-
-        function formatDollars(n) {
-            if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
-            if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
-            return '$' + n.toFixed(0);
-        }
-
-        function showError(msg) {
-            const el = document.getElementById('error');
-            el.textContent = msg;
-            el.classList.add('show');
-        }
-
-        function saveHistory(data, address, chainId) {
-            const entry = {
-                address,
-                chainId,
-                score: data.risk_score,
-                level: data.risk_level,
-                name: data.token_name || 'Unknown',
-                symbol: data.token_symbol || '',
-                time: Date.now()
-            };
-            history.unshift(entry);
-            if (history.length > 20) history = history.slice(0, 20);
-            localStorage.setItem('rugguard_history', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const section = document.getElementById('historySection');
-            const list = document.getElementById('historyList');
-
-            if (history.length === 0) {
-                section.style.display = 'none';
-                return;
-            }
-
-            section.style.display = 'block';
-            list.innerHTML = history.slice(0, 10).map(h => {
-                const level = h.level.toLowerCase();
-                const ago = timeAgo(h.time);
-                const name = h.symbol ? `${h.name} (${h.symbol})` : h.name;
-                return `
-                    <div class="history-item" onclick="quickScan('${h.address}',${h.chainId})">
-                        <div class="history-score ${level}">${h.score}</div>
-                        <div class="history-info">
-                            <div class="history-token">${name}</div>
-                            <div class="history-addr">${h.address.slice(0,10)}...${h.address.slice(-6)}</div>
-                        </div>
-                        <div class="history-time">${ago}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function timeAgo(ts) {
-            const diff = Math.floor((Date.now() - ts) / 1000);
-            if (diff < 60) return 'just now';
-            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-            return Math.floor(diff / 86400) + 'd ago';
-        }
-
-        function clearHistory() {
-            history = [];
-            localStorage.removeItem('rugguard_history');
-            renderHistory();
-            document.getElementById('statScans').textContent = '0';
-        }
-    </script>
+// ── URL params for deep linking ──
+(function() {
+    const p = new URLSearchParams(window.location.search);
+    const addr = p.get('address');
+    const chain = p.get('chain');
+    if (addr && /^0x[0-9a-fA-F]{40}$/.test(addr)) {
+        document.getElementById('tokenAddress').value = addr;
+        if (chain) document.getElementById('chainId').value = chain;
+        setTimeout(scanToken, 500);
+    }
+})();
+</script>
 </body>
 </html>
